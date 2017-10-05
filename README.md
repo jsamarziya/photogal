@@ -10,7 +10,6 @@ to run the app.
 ````
 $ make init
 $ ./photogal.sh
-
 ````
 
 ## Building a Distribution
