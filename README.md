@@ -21,3 +21,4 @@ $ make envclean init dist
 ## References
 
 * http://flask.pocoo.org
+* http://pillow.readthedocs.io
