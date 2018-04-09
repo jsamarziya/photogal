@@ -4,12 +4,12 @@ A photo gallery web application.
 
 ## Running Locally
 
-Run `make init`, which creates a virtual environment in a new `venv` directory. Then use the `photogal.sh` script
-to run the app. 
+Run `make init`, which creates a virtual environment in a new `venv` directory.
+Then `make run` to run the application.
 
 ````
 $ make init
-$ ./photogal.sh
+$ make run
 ````
 
 ## Building a Distribution

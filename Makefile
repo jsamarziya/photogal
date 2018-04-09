@@ -1,4 +1,4 @@
-.PHONY: clean dist doctest envclean init test
+.PHONY: clean dist doctest envclean init run test
 
 PYTHON = python3
 
@@ -6,6 +6,11 @@ init:
 	$(PYTHON) -m venv venv
 	venv/bin/pip install wheel pytest
 	venv/bin/pip install -e .
+
+run:
+	FLASK_APP=photogal \
+	FLASK_DEBUG=1 \
+	venv/bin/flask run
 
 test: doctest
 
@@ -20,3 +25,4 @@ clean:
 
 envclean: clean
 	rm -rf venv photogal.egg-info
+
