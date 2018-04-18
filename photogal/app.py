@@ -15,6 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from logging.config import dictConfig
+
 from flask import Flask
 
+# TODO what's the right way to configure logging?
+dictConfig({
+    'version': 1,
+    'root': {
+        'level': 'INFO'
+    }
+})
+
 app = Flask('photogal')
+
+# TODO remove these hardcoded configs!
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+
+from photogal.database import db
+
+db.create_all()
