@@ -36,3 +36,5 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 from photogal.database import db
 
 db.create_all()
+
+app.logger.info("photogal started")

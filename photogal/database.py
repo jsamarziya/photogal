@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 
-from photogal.app import app
+from photogal.application import app
 
 db = SQLAlchemy(app)
 
