@@ -7,7 +7,10 @@ setup(
     zip_safe=False,
     install_requires=[
         'Flask',
+        'Flask-GraphQL',
+        'Flask-SQLAlchemy',
         'Pillow',
-        'SQLAlchemy'
+        'SQLAlchemy',
+        'graphene_sqlalchemy'
     ],
 )
