@@ -17,15 +17,36 @@
 
 from flask import Flask
 
-app = Flask('photogal', instance_relative_config=True)
-app.logger.debug("Instance path is %s", app.instance_path)
-app.config.from_object('photogal.config')
-app.config.from_pyfile('photogal.cfg', silent=True)
-app.config.from_envvar('PHOTOGAL_CONFIG', silent=True)
-app.logger.debug("Configuration is %s", app.config)
 
-from photogal.database import db
+def create_app():
+    """
+    Creates the Flask app.
+    """
+    app = Flask('photogal', instance_relative_config=True)
+    load_config(app)
+    init_database(app)
+    app.logger.info("photogal started")
+    return app
 
-db.create_all()
 
-app.logger.info("photogal started")
+def load_config(app):
+    """
+    Loads the application configuration.
+    """
+    app.logger.debug("Instance path is %s", app.instance_path)
+    app.config.from_object('photogal.config')
+    app.config.from_pyfile('photogal.cfg', silent=True)
+    app.config.from_envvar('PHOTOGAL_CONFIG', silent=True)
+    app.logger.debug("Configuration is %s", app.config)
+
+
+def init_database(app):
+    """
+    Initializes the database.
+    """
+    from photogal.database import db, register_listeners
+    db.init_app(app)
+    with app.app_context():
+        register_listeners()
+        db.create_all()
+    return db
