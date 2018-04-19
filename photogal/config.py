@@ -15,17 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import Flask
+# Photogal default configuration values
 
-app = Flask('photogal', instance_relative_config=True)
-app.logger.debug("Instance path is %s", app.instance_path)
-app.config.from_object('photogal.config')
-app.config.from_pyfile('photogal.cfg', silent=True)
-app.config.from_envvar('PHOTOGAL_CONFIG', silent=True)
-app.logger.debug("Configuration is %s", app.config)
-
-from photogal.database import db
-
-db.create_all()
-
-app.logger.info("photogal started")
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/photogal.db'
