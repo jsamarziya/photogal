@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import json
 
 from flask import Flask
 
@@ -37,7 +38,7 @@ def load_config(app):
     app.config.from_object('photogal.config')
     app.config.from_pyfile('photogal.cfg', silent=True)
     app.config.from_envvar('PHOTOGAL_CONFIG', silent=True)
-    app.logger.debug("Configuration is %s", app.config)
+    app.logger.debug("Configuration: %s", json.dumps(app.config, indent=4, sort_keys=True, default=str))
 
 
 def init_database(app):
