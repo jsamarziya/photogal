@@ -23,5 +23,5 @@ $ make envclean init dist
 * http://flask.pocoo.org
 * http://pillow.readthedocs.io
 * https://www.sqlite.org
-* https://docs.python.org/3/library/sqlite3.html
 * http://www.sqlalchemy.org
+* https://github.com/ActivisionGameScience/assertpy
