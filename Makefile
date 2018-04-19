@@ -15,7 +15,7 @@ run:
 test: doctest pytest
 
 doctest:
-	venv/bin/pytest --doctest-modules --pyargs photogal
+#	venv/bin/pytest --doctest-modules --pyargs photogal
 
 pytest:
 	venv/bin/pytest
