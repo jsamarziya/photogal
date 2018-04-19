@@ -1,4 +1,4 @@
-.PHONY: clean dist doctest envclean init run test
+.PHONY: clean dist doctest envclean init pytest run test
 
 PYTHON = python3
 
@@ -12,10 +12,13 @@ run:
 	FLASK_DEBUG=1 \
 	venv/bin/flask run
 
-test: doctest
+test: doctest pytest
 
 doctest:
 	venv/bin/pytest --doctest-modules --pyargs photogal
+
+pytest:
+	venv/bin/pytest
 
 dist: test
 	venv/bin/python setup.py bdist_wheel
@@ -24,5 +27,5 @@ clean:
 	rm -rf build dist
 
 envclean: clean
-	rm -rf venv photogal.egg-info
+	rm -rf venv src/photogal.egg-info .pytest_cache
 
