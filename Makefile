@@ -4,7 +4,7 @@ PYTHON = python3
 
 init:
 	$(PYTHON) -m venv venv
-	venv/bin/pip install wheel pytest assertpy
+	venv/bin/pip install assertpy pytest pytest-flask wheel
 	venv/bin/pip install -e .
 
 run:
