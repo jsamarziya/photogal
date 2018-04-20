@@ -17,12 +17,16 @@
 
 import photogal.application
 import pytest
+from flask import Flask
 from flask.testing import FlaskClient
 
 
 @pytest.fixture
-def client() -> FlaskClient:
+def app() -> Flask:
     from . import config
-    app = photogal.application.create_app(config)
-    test_client = app.test_client()
-    return test_client
+    return photogal.application.create_app(config)
+
+
+@pytest.fixture
+def client(app) -> FlaskClient:
+    return app.test_client()
