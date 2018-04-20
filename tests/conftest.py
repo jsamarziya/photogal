@@ -14,8 +14,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import photogal.application
+import pytest
 from flask.testing import FlaskClient
 
 
-def test_sample(client: FlaskClient):
-    pass
+@pytest.fixture
+def client() -> FlaskClient:
+    from . import config
+    app = photogal.application.create_app(config)
+    test_client = app.test_client()
+    return test_client
