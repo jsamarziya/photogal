@@ -25,4 +25,5 @@ $ make envclean init dist
 * https://www.sqlite.org
 * http://www.sqlalchemy.org
 * https://docs.pytest.org
+* http://pytest-flask.readthedocs.io/en/latest/
 * https://github.com/ActivisionGameScience/assertpy
