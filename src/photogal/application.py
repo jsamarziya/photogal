@@ -19,27 +19,30 @@ import json
 
 from flask import Flask
 
+from . import config as default_config
 
-def create_app():
+
+def create_app(config=None):
     """
     Creates the Flask app.
     """
     app = Flask('photogal', instance_relative_config=True)
-    load_config(app)
+    load_config(app, config)
     init_database(app)
-    app.logger.info("photogal started")
     return app
 
 
-def load_config(app):
+def load_config(app, config=None):
     """
     Loads the application configuration.
     """
     app.logger.debug("Instance path is %s", app.instance_path)
-    app.config.from_object('photogal.config')
+    app.config.from_object(default_config)
     app.config.from_pyfile('photogal.cfg', silent=True)
+    if config is not None:
+        app.config.from_object(config)
     app.config.from_envvar('PHOTOGAL_CONFIG', silent=True)
-    app.logger.debug("Configuration: %s", json.dumps(app.config, indent=4, sort_keys=True, default=str))
+    app.logger.debug("Configuration:\n%s", json.dumps(app.config, indent=4, sort_keys=True, default=str))
 
 
 def init_database(app):
