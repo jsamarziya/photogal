@@ -16,9 +16,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import photogal.application
+import photogal.database
 import pytest
 from flask import Flask
-from flask.testing import FlaskClient
+from flask_sqlalchemy import SQLAlchemy
 
 
 @pytest.fixture
@@ -27,6 +28,7 @@ def app() -> Flask:
     return photogal.application.create_app(config)
 
 
+# noinspection PyUnusedLocal
 @pytest.fixture
-def client(app) -> FlaskClient:
-    return app.test_client()
+def db(app) -> SQLAlchemy:
+    return photogal.database.db
