@@ -12,13 +12,13 @@ run:
 	FLASK_DEBUG=1 \
 	venv/bin/flask run
 
-test: doctest pytest
+test: pytest
 
 doctest:
-#	venv/bin/pytest --doctest-modules --pyargs photogal
+	venv/bin/pytest --doctest-modules --pyargs photogal
 
 pytest:
-	venv/bin/pytest
+	venv/bin/pytest tests
 
 dist: test
 	venv/bin/python setup.py bdist_wheel
