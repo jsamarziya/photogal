@@ -17,5 +17,5 @@
 
 # Photogal default configuration values
 
-SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/photogal.db'
+SQLALCHEMY_TRACK_MODIFICATIONS = False
