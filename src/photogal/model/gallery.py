@@ -16,14 +16,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from photogal.database import db
+from sqlalchemy import text
 
 
 class Gallery(db.Model):
     __tablename__ = "galleries"
 
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, nullable=False)
-    last_modified = db.Column(db.DateTime, nullable=False)
+    created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
+    last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     name = db.Column(db.String)
     description = db.Column(db.String)
     order_index = db.Column(db.Integer)
