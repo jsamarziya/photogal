@@ -18,11 +18,12 @@
 import json
 
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 from . import config as default_config
 
 
-def create_app(config=None):
+def create_app(config=None) -> Flask:
     """
     Creates the Flask app.
     """
@@ -45,7 +46,7 @@ def load_config(app, config=None):
     app.logger.debug("Configuration:\n%s", json.dumps(app.config, indent=4, sort_keys=True, default=str))
 
 
-def init_database(app):
+def init_database(app: Flask) -> SQLAlchemy:
     """
     Initializes the database.
     """
