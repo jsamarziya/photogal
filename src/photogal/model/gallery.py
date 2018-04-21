@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from photogal.database import db
+from photogal.database import db, register_last_modified_trigger_listener
 from sqlalchemy import text
 
 
@@ -35,3 +35,6 @@ class Gallery(db.Model):
 
     def __repr__(self):
         return "<Gallery (id={}, name='{}')>".format(self.id, self.name)
+
+
+register_last_modified_trigger_listener(Gallery.__table__)

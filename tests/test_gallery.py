@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import time
 
 import pytest
 from assertpy import assert_that
@@ -42,3 +43,14 @@ def test_add_sets_defaults(db: SQLAlchemy):
     db.session.commit()
     assert_that(gallery.created).is_not_none()
     assert_that(gallery.last_modified).is_equal_to(gallery.created)
+
+
+def test_last_modified_trigger(db: SQLAlchemy):
+    gallery = Gallery(name="myGallery")
+    db.session.add(gallery)
+    db.session.commit()
+    assert_that(gallery.last_modified).is_equal_to(gallery.created)
+    time.sleep(1)
+    gallery.description = "myDescription"
+    db.session.commit()
+    assert_that((gallery.last_modified - gallery.created).seconds).is_greater_than_or_equal_to(1)

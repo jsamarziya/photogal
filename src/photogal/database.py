@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import event
+from sqlalchemy import event, DDL, Table
 
 db = SQLAlchemy()
 
@@ -38,6 +38,21 @@ def register_listeners():
     def do_begin(conn):
         # See http://docs.sqlalchemy.org/en/latest/dialects/sqlite.html#serializable-isolation-savepoints-transactional-ddl
         conn.execute("BEGIN")
+
+
+def register_last_modified_trigger_listener(table: Table):
+    """
+    Registers an after-create event listener that creates a trigger to update the last_modified column.
+
+    :param table: the table to add the trigger to
+    """
+    statement = """\
+CREATE TRIGGER update_last_modified_{0} AFTER UPDATE ON {0}
+  BEGIN
+    UPDATE {0} SET last_modified = datetime('now') WHERE id=new.id;
+  END;"""
+
+    event.listen(table, 'after_create', DDL(statement.format(table.name)))
 
 
 # noinspection PyUnresolvedReferences
