@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import time
+from datetime import datetime
 
 import pytest
 from assertpy import assert_that
@@ -54,3 +55,17 @@ def test_last_modified_trigger(db: SQLAlchemy):
     gallery.description = "myDescription"
     db.session.commit()
     assert_that((gallery.last_modified - gallery.created).seconds).is_greater_than_or_equal_to(1)
+
+
+def test_last_modified(db: SQLAlchemy):
+    """
+    Verifies that we can set a last_modified value when the object is created, but the trigger will still update it
+    """
+    last_modified = datetime.fromtimestamp(0)
+    gallery = Gallery(last_modified=last_modified)
+    db.session.add(gallery)
+    db.session.commit()
+    assert_that(gallery.last_modified).is_equal_to(last_modified)
+    gallery.description = "myDescription"
+    db.session.commit()
+    assert_that(gallery.last_modified).is_not_equal_to(last_modified)
