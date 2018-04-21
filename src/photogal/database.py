@@ -56,6 +56,4 @@ CREATE TRIGGER update_last_modified_{0} AFTER UPDATE ON {0}
 
 
 # noinspection PyUnresolvedReferences
-from photogal.model.gallery import Gallery
-# noinspection PyUnresolvedReferences
-from photogal.model.image import Image
+from photogal.model import Gallery, Image
