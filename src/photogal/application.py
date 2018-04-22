@@ -62,11 +62,5 @@ def init_database(app: Flask) -> SQLAlchemy:
 
 def init_views(app: Flask):
     from .schema import schema
-    app.add_url_rule(
-        '/graphql',
-        view_func=GraphQLView.as_view(
-            'graphql',
-            schema=schema,
-            graphiql=True
-        )
-    )
+    app.add_url_rule('/graphql', view_func=GraphQLView.as_view('graphql', schema=schema, graphiql=True))
+    app.add_url_rule('/graphql/batch', view_func=GraphQLView.as_view('graphql-batch', schema=schema, batch=True))
