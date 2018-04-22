@@ -36,6 +36,7 @@ class Image(SQLAlchemyObjectType):
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
     all_galleries = SQLAlchemyConnectionField(Gallery)
+    all_images = SQLAlchemyConnectionField(Image)
 
 
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, types=[Gallery, Image])
