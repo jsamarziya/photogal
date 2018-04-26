@@ -22,7 +22,7 @@ from sqlalchemy import text
 class Image(db.Model):
     __tablename__ = "images"
 
-    id = db.Column(db.Integer, primary_key=True)
+    image_id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     # TODO: "title"?
