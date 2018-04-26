@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from collections import OrderedDict
 
 from flask_sqlalchemy import SQLAlchemy
@@ -58,3 +59,35 @@ def test_query_gallery(db: SQLAlchemy, graphene_client: Client):
                                        ])
                           )])
     }
+
+
+def test_create_gallery(graphene_client: Client):
+    result = graphene_client.execute('''
+    mutation {
+        createGallery(name: "galleryName", public: true, orderIndex: 78) {
+            gallery {
+                galleryId
+                name
+                public
+                orderIndex
+            }
+        }
+    }
+    ''')
+    assert result == {
+        'data':
+            OrderedDict([('createGallery',
+                          OrderedDict([('gallery',
+                                        OrderedDict([('galleryId', 1),
+                                                     ('name', 'galleryName'),
+                                                     ('public', True),
+                                                     ('orderIndex', 78)
+                                                     ])
+                                        )])
+                          )])
+    }
+    gallery = Gallery.query.get(1)
+    assert gallery.gallery_id == 1
+    assert gallery.name == 'galleryName'
+    assert gallery.public is True
+    assert gallery.order_index == 78
