@@ -22,7 +22,7 @@ from sqlalchemy import text
 class Gallery(db.Model):
     __tablename__ = "galleries"
 
-    id = db.Column(db.Integer, primary_key=True)
+    gallery_id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     name = db.Column(db.String)
