@@ -20,6 +20,8 @@ import photogal.database
 import pytest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from graphene.test import Client
+from photogal.schema import schema
 
 
 @pytest.fixture
@@ -32,3 +34,9 @@ def app() -> Flask:
 @pytest.fixture
 def db(app) -> SQLAlchemy:
     return photogal.database.db
+
+
+# noinspection PyUnusedLocal
+@pytest.fixture
+def graphene_client(db) -> Client:
+    return Client(schema)
