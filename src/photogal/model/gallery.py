@@ -29,7 +29,7 @@ class Gallery(db.Model):
     description = db.Column(db.String)
     order_index = db.Column(db.Integer)
     public = db.Column(db.Boolean)
-    gallery_image_id = db.Column(db.Integer, db.ForeignKey("images.id"))
+    gallery_image_id = db.Column(db.Integer, db.ForeignKey("images.image_id"))
 
     # TODO: images collection
 
@@ -37,4 +37,4 @@ class Gallery(db.Model):
         return "<Gallery (id={}, name='{}')>".format(self.id, self.name)
 
 
-register_last_modified_trigger_listener(Gallery.__table__)
+register_last_modified_trigger_listener(Gallery.__table__, "gallery_id")

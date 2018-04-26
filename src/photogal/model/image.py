@@ -44,4 +44,4 @@ class Image(db.Model):
         return "<Image (id={}, name='{}')>".format(self.id, self.name)
 
 
-register_last_modified_trigger_listener(Image.__table__)
+register_last_modified_trigger_listener(Image.__table__, "image_id")
