@@ -40,19 +40,20 @@ def register_listeners():
         conn.execute("BEGIN")
 
 
-def register_last_modified_trigger_listener(table: Table):
+def register_last_modified_trigger_listener(table: Table, id_column: str):
     """
     Registers an after-create event listener that creates a trigger to update the last_modified column.
 
     :param table: the table to add the trigger to
+    :param id_column: the name of the id column
     """
     statement = """\
 CREATE TRIGGER update_last_modified_{0} AFTER UPDATE ON {0}
   BEGIN
-    UPDATE {0} SET last_modified = datetime('now') WHERE id=new.id;
+    UPDATE {0} SET last_modified = datetime('now') WHERE {1}=new.{1};
   END;"""
 
-    event.listen(table, 'after_create', DDL(statement.format(table.name)))
+    event.listen(table, 'after_create', DDL(statement.format(table.name, id_column)))
 
 
 # noinspection PyUnresolvedReferences
