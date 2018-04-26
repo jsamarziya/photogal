@@ -35,8 +35,22 @@ class Image(SQLAlchemyObjectType):
 
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
+    gallery = graphene.Field(Gallery, id=graphene.Int())
+    image = graphene.Field(Image, id=graphene.Int())
     galleries = SQLAlchemyConnectionField(Gallery)
     images = SQLAlchemyConnectionField(Image)
+
+    # noinspection PyMethodMayBeStatic
+    def resolve_gallery(self, info, **args):
+        query = Gallery.get_query(info)
+        gallery_id = args.get('id')
+        return query.filter(GalleryModel.id == gallery_id).first()
+
+    # noinspection PyMethodMayBeStatic
+    def resolve_image(self, info, **args):
+        query = Image.get_query(info)
+        image_id = args.get('id')
+        return query.filter(ImageModel.id == image_id).first()
 
 
 schema = graphene.Schema(query=Query, types=[Gallery, Image])
