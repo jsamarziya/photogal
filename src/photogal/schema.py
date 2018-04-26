@@ -26,13 +26,26 @@ class Gallery(SQLAlchemyObjectType):
     class Meta:
         model = GalleryModel
         interfaces = (relay.Node,)
+        exclude_fields = ['gallery_id']
+
+    gallery_id = graphene.Int()
+
+    # noinspection PyUnusedLocal
+    def resolve_gallery_id(self, info):
+        return self.gallery_id
 
 
 class Image(SQLAlchemyObjectType):
     class Meta:
         model = ImageModel
         interfaces = (relay.Node,)
+        exclude_fields = ['gallery_id']
 
+    image_id = graphene.Int()
+
+    # noinspection PyUnusedLocal
+    def resolve_image_id(self, info):
+        return self.image_id
 
 class CreateGallery(graphene.Mutation):
     class Arguments:
