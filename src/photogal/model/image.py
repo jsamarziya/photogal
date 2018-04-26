@@ -41,7 +41,7 @@ class Image(db.Model):
     # TODO keywords collection
 
     def __repr__(self):
-        return "<Image (id={}, name='{}')>".format(self.id, self.name)
+        return "<Image (iamge_id={}, name='{}')>".format(self.image_id, self.name)
 
 
 register_last_modified_trigger_listener(Image.__table__, "image_id")

@@ -34,7 +34,7 @@ class Gallery(db.Model):
     # TODO: images collection
 
     def __repr__(self):
-        return "<Gallery (id={}, name='{}')>".format(self.id, self.name)
+        return "<Gallery (gallery_id={}, name='{}')>".format(self.gallery_id, self.name)
 
 
 register_last_modified_trigger_listener(Gallery.__table__, "gallery_id")
