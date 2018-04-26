@@ -36,15 +36,17 @@ class Image(SQLAlchemyObjectType):
 
 class CreateGallery(graphene.Mutation):
     class Arguments:
-        created = graphene.DateTime(required=False)
-        last_modified = graphene.DateTime(required=False)
-        name = graphene.String(required=False)
-        description = graphene.String(required=False)
-        order_index = graphene.Int(required=False)
-        public = graphene.Boolean(required=False)
-        gallery_image_id = graphene.Int(required=False)
+        created = graphene.DateTime(description="The time at which the gallery was created.", required=False)
+        last_modified = graphene.DateTime(description="The time at which the gallery was last modified.",
+                                          required=False)
+        name = graphene.String(description="The name of the gallery.", required=False)
+        description = graphene.String(description="The description of the gallery.", required=False)
+        order_index = graphene.Int(description="The ordering index.", required=False)
+        public = graphene.Boolean(
+            description="The public flag. Non-public galleries are not visible to unauthenticated users.",
+            required=False)
+        gallery_image_id = graphene.Int(description="The id of the gallery image.", required=False)
 
-    ok = graphene.Boolean()
     gallery = graphene.Field(lambda: Gallery)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
@@ -70,24 +72,44 @@ class CreateGallery(graphene.Mutation):
         return CreateGallery(gallery=gallery)
 
 
+class DeleteGallery(graphene.Mutation):
+    class Arguments:
+        gallery_id = graphene.Int(required=True)
+
+    gallery = graphene.Field(lambda: Gallery)
+    ok = graphene.Boolean(description="True if the gallery was deleted, False otherwise.")
+
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def mutate(self, info, gallery_id):
+        gallery = GalleryModel.query.get(gallery_id)
+        if gallery:
+            db.session.delete(gallery)
+            db.session.commit()
+            ok = True
+        else:
+            ok = False
+        return DeleteGallery(gallery=gallery, ok=ok)
+
+
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
-    gallery = graphene.Field(Gallery, id=graphene.Int())
-    image = graphene.Field(Image, id=graphene.Int())
+    gallery = graphene.Field(Gallery, gallery_id=graphene.Int())
+    image = graphene.Field(Image, image_id=graphene.Int())
     galleries = SQLAlchemyConnectionField(Gallery)
     images = SQLAlchemyConnectionField(Image)
 
-    # noinspection PyMethodMayBeStatic,PyShadowingBuiltins,PyUnusedLocal
-    def resolve_gallery(self, info, id=None):
-        return GalleryModel.query.filter(GalleryModel.id == id).first()
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def resolve_gallery(self, info, gallery_id=None):
+        return GalleryModel.query.get(gallery_id)
 
-    # noinspection PyMethodMayBeStatic,PyShadowingBuiltins,PyUnusedLocal
-    def resolve_image(self, info, id=None):
-        return ImageModel.query.filter(ImageModel.id == id).first()
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def resolve_image(self, info, image_id=None):
+        return ImageModel.query.get(image_id)
 
 
 class Mutations(graphene.ObjectType):
-    create_gallery = CreateGallery.Field()
+    create_gallery = CreateGallery.Field(description="Creates a new gallery.")
+    delete_gallery = DeleteGallery.Field(description="Deletes the specified gallery.")
 
 
 schema = graphene.Schema(query=Query, mutation=Mutations)
