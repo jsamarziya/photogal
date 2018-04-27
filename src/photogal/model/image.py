@@ -22,7 +22,7 @@ from sqlalchemy import text
 class Image(db.Model):
     __tablename__ = "images"
 
-    image_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     # TODO: "title"?
@@ -41,7 +41,7 @@ class Image(db.Model):
     # TODO keywords collection
 
     def __repr__(self):
-        return "<Image (iamge_id={}, name='{}')>".format(self.image_id, self.name)
+        return "<Image (id={}, name='{}')>".format(self.id, self.name)
 
 
-register_last_modified_trigger_listener(Image.__table__, "image_id")
+register_last_modified_trigger_listener(Image.__table__)

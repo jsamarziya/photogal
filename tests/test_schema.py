@@ -87,7 +87,7 @@ def test_create_gallery(graphene_client: Client):
                           )])
     }
     gallery = Gallery.query.get(1)
-    assert gallery.gallery_id == 1
+    assert gallery.id == 1
     assert gallery.name == 'galleryName'
     assert gallery.public is True
     assert gallery.order_index == 78

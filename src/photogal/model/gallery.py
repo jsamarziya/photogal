@@ -22,19 +22,19 @@ from sqlalchemy import text
 class Gallery(db.Model):
     __tablename__ = "galleries"
 
-    gallery_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     name = db.Column(db.String)
     description = db.Column(db.String)
     order_index = db.Column(db.Integer)
     public = db.Column(db.Boolean)
-    gallery_image_id = db.Column(db.Integer, db.ForeignKey("images.image_id"))
+    gallery_image_id = db.Column(db.Integer, db.ForeignKey("images.id"))
 
     # TODO: images collection
 
     def __repr__(self):
-        return "<Gallery (gallery_id={}, name='{}')>".format(self.gallery_id, self.name)
+        return "<Gallery (id={}, name='{}')>".format(self.id, self.name)
 
 
-register_last_modified_trigger_listener(Gallery.__table__, "gallery_id")
+register_last_modified_trigger_listener(Gallery.__table__)
