@@ -15,6 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from .gallery import Gallery
-from .gallery_image import GalleryImage
-from .image import Image
+from photogal.database import db
+
+
+class GalleryImage(db.Model):
+    __tablename__ = 'gallery_images'
+
+    gallery_id = db.Column(db.Integer, db.ForeignKey('gallery.id'), primary_key=True)
+    image_id = db.Column(db.Integer, db.ForeignKey('image.id'), primary_key=True)
+    position = db.Column(db.Integer, nullable=False)
+
+    gallery = db.relationship("Gallery", back_populates="images")
+    image = db.relationship("Image", back_populates="galleries")

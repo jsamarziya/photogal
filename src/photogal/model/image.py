@@ -20,7 +20,7 @@ from sqlalchemy import text
 
 
 class Image(db.Model):
-    __tablename__ = "images"
+    __tablename__ = "image"
 
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
@@ -37,7 +37,8 @@ class Image(db.Model):
     creation_month = db.Column(db.Integer)
     creation_year = db.Column(db.Integer)
 
-    # TODO galleries collection
+    galleries = db.relationship("GalleryImage", back_populates="image")
+
     # TODO keywords collection
 
     def __repr__(self):

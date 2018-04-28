@@ -55,7 +55,7 @@ class CreateGallery(graphene.Mutation):
                                           required=False)
         name = graphene.String(description="The name of the gallery.", required=False)
         description = graphene.String(description="The description of the gallery.", required=False)
-        order_index = graphene.Int(description="The ordering index.", required=False)
+        position = graphene.Int(description="The ordering position.", required=False)
         public = graphene.Boolean(
             description="The public flag. Non-public galleries are not visible to unauthenticated users.",
             required=False)
@@ -69,7 +69,7 @@ class CreateGallery(graphene.Mutation):
                last_modified=None,
                name=None,
                description=None,
-               order_index=None,
+               position=None,
                public=None,
                gallery_image_id=None):
         gallery = GalleryModel(
@@ -77,7 +77,7 @@ class CreateGallery(graphene.Mutation):
             last_modified=last_modified,
             name=name,
             description=description,
-            order_index=order_index,
+            position=position,
             public=public,
             gallery_image_id=gallery_image_id
         )

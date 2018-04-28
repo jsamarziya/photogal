@@ -64,12 +64,12 @@ def test_query_gallery(db: SQLAlchemy, graphene_client: Client):
 def test_create_gallery(graphene_client: Client):
     result = graphene_client.execute('''
     mutation {
-        createGallery(name: "galleryName", public: true, orderIndex: 78) {
+        createGallery(name: "galleryName", public: true, position: 78) {
             gallery {
                 galleryId
                 name
                 public
-                orderIndex
+                position
             }
         }
     }
@@ -81,7 +81,7 @@ def test_create_gallery(graphene_client: Client):
                                         OrderedDict([('galleryId', 1),
                                                      ('name', 'galleryName'),
                                                      ('public', True),
-                                                     ('orderIndex', 78)
+                                                     ('position', 78)
                                                      ])
                                         )])
                           )])
@@ -90,4 +90,4 @@ def test_create_gallery(graphene_client: Client):
     assert gallery.id == 1
     assert gallery.name == 'galleryName'
     assert gallery.public is True
-    assert gallery.order_index == 78
+    assert gallery.position == 78

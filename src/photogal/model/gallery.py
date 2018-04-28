@@ -20,18 +20,18 @@ from sqlalchemy import text
 
 
 class Gallery(db.Model):
-    __tablename__ = "galleries"
+    __tablename__ = "gallery"
 
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     name = db.Column(db.String)
     description = db.Column(db.String)
-    order_index = db.Column(db.Integer)
+    position = db.Column(db.Integer)
     public = db.Column(db.Boolean)
-    gallery_image_id = db.Column(db.Integer, db.ForeignKey("images.id"))
+    gallery_image_id = db.Column(db.Integer, db.ForeignKey("image.id"))
 
-    # TODO: images collection
+    images = db.relationship("GalleryImage", back_populates="gallery", order_by="GalleryImage.position")
 
     def __repr__(self):
         return "<Gallery (id={}, name='{}')>".format(self.id, self.name)
