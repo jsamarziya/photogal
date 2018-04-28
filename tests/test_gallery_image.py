@@ -61,3 +61,9 @@ def test_image_galleries(db):
     db.session.commit()
 
     assert_that([i.gallery for i in image.galleries]).contains_only(gallery2)
+    assert_that(gallery1.images).is_empty()
+    assert_that([i.image for i in gallery2.images]).contains_only(image)
+
+    db.session.delete(image)
+    db.session.commit()
+    assert_that(gallery2.images).is_empty()

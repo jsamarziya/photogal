@@ -37,7 +37,9 @@ class Image(db.Model):
     creation_month = db.Column(db.Integer)
     creation_year = db.Column(db.Integer)
 
-    galleries = db.relationship("GalleryImage", back_populates="image")
+    galleries = db.relationship("GalleryImage",
+                                back_populates="image",
+                                cascade="save-update, merge, delete, delete-orphan")
 
     # TODO keywords collection
 
