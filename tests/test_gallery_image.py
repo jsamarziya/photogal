@@ -40,6 +40,11 @@ def test_gallery_images(db):
 
     assert_that([i.image for i in gallery.images]).contains_sequence(image1, image3, image2)
 
+    db.session.delete(gallery)
+    db.session.commit()
+
+    assert_that(db.session.query(Image).count()).is_equal_to(3)
+
 
 def test_image_galleries(db):
     image = Image(name="myImage")
@@ -57,7 +62,7 @@ def test_image_galleries(db):
 
     assert_that([i.gallery for i in image.galleries]).contains_only(gallery1, gallery2)
 
-    db.session.delete(gallery1.images[0])
+    gallery1.images.remove(gallery1.images[0])
     db.session.commit()
 
     assert_that([i.gallery for i in image.galleries]).contains_only(gallery2)
@@ -66,4 +71,6 @@ def test_image_galleries(db):
 
     db.session.delete(image)
     db.session.commit()
+
+    assert_that(db.session.query(Gallery).count()).is_equal_to(2)
     assert_that(gallery2.images).is_empty()

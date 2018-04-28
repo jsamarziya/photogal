@@ -31,7 +31,10 @@ class Gallery(db.Model):
     public = db.Column(db.Boolean)
     gallery_image_id = db.Column(db.Integer, db.ForeignKey("image.id"))
 
-    images = db.relationship("GalleryImage", back_populates="gallery", order_by="GalleryImage.position")
+    images = db.relationship("GalleryImage",
+                             back_populates="gallery",
+                             order_by="GalleryImage.position",
+                             cascade="save-update, merge, delete, delete-orphan")
 
     def __repr__(self):
         return "<Gallery (id={}, name='{}')>".format(self.id, self.name)
