@@ -19,7 +19,7 @@ from photogal.database import db
 
 
 class GalleryImage(db.Model):
-    __tablename__ = 'gallery_images'
+    __tablename__ = 'gallery_image'
 
     gallery_id = db.Column(db.Integer, db.ForeignKey('gallery.id'), primary_key=True)
     image_id = db.Column(db.Integer, db.ForeignKey('image.id'), primary_key=True)
