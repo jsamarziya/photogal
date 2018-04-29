@@ -25,12 +25,11 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
-    # TODO: "title"?
     name = db.Column(db.String)
     description = db.Column(db.String)
-    # TODO: "path"? "filename"? "file"?
-    location = db.Column(db.String)
-    # TODO: not sure if we need width + height
+    # The filename that was specified when the image was uploaded
+    filename = db.Column(db.String)
+    # TODO: not sure if we need width + height. What do we use it for?
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)
     creation_day = db.Column(db.Integer)
@@ -40,8 +39,10 @@ class Image(db.Model):
     galleries = db.relationship("GalleryImage",
                                 back_populates="image",
                                 cascade="save-update, merge, delete, delete-orphan")
-
-    # TODO keywords collection
+    keywords = db.relationship("Keyword",
+                               back_populates="image",
+                               order_by="Keyword.position",
+                               cascade="save-update, merge, delete, delete-orphan")
 
     def __repr__(self):
         return "<Image (id={}, name='{}')>".format(self.id, self.name)

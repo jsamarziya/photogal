@@ -15,7 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from .gallery import Gallery
-from .gallery_image import GalleryImage
-from .image import Image
-from .keyword import Keyword
+from photogal.database import db
+
+
+class Keyword(db.Model):
+    __tablename__ = 'keyword'
+
+    image_id = db.Column(db.Integer, db.ForeignKey('image.id'), primary_key=True)
+    keyword = db.Column(db.String, nullable=False)
+    position = db.Column(db.Integer, primary_key=True)
+
+    image = db.relationship("Image", back_populates="keywords")
+
+# TODO: unique constraint on image_id & position
+# TODO: unique constraint on image_id & keyword
