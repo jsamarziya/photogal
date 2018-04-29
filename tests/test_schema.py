@@ -19,8 +19,7 @@ from collections import OrderedDict
 
 from flask_sqlalchemy import SQLAlchemy
 from graphene.test import Client
-from photogal.model import Image
-from photogal.model.gallery import Gallery
+from photogal.database.model import Gallery, Image
 
 
 def test_query_nonexistent_gallery(graphene_client: Client):

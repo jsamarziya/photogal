@@ -16,20 +16,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from photogal.database import db, register_last_modified_trigger_listener
-from sqlalchemy import text
 
 
 class Gallery(db.Model):
+    """A photo gallery."""
+
     __tablename__ = "gallery"
 
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
-    last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
+    created = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
+    last_modified = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
     name = db.Column(db.String)
     description = db.Column(db.String)
     # TODO position should technically be non-null...
     position = db.Column(db.Integer)
-    public = db.Column(db.Boolean, nullable=False, server_default=text("0"))
+    public = db.Column(db.Boolean, nullable=False, server_default=db.text("0"))
     gallery_image_id = db.Column(db.Integer, db.ForeignKey("image.id"))
 
     images = db.relationship("GalleryImage",

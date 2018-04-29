@@ -40,6 +40,7 @@ def register_listeners():
         conn.execute("BEGIN")
 
 
+# TODO: turn this into a decorator?
 def register_last_modified_trigger_listener(table: Table, id_column: str = "id"):
     """
     Registers an after-create event listener that creates a trigger to update the last_modified column.
@@ -56,5 +57,4 @@ CREATE TRIGGER update_last_modified_{0} AFTER UPDATE ON {0}
     event.listen(table, 'after_create', DDL(statement.format(table.name, id_column)))
 
 
-# noinspection PyUnresolvedReferences
-from photogal.model import Gallery, Image
+from . import model

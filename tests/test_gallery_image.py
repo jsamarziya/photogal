@@ -16,8 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from assertpy import assert_that
-from photogal.model import Image, GalleryImage
-from photogal.model.gallery import Gallery
+from photogal.database.model import Gallery, Image, GalleryImage
 
 
 def test_gallery_images(db):

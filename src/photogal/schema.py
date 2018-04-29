@@ -19,7 +19,7 @@ import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from photogal.database import db
-from photogal.model import Gallery as GalleryModel, Image as ImageModel
+from photogal.database.model import Gallery as GalleryModel, Image as ImageModel
 
 
 class Gallery(SQLAlchemyObjectType):

@@ -18,11 +18,14 @@
 from photogal.database import db
 
 
-class Keyword(db.Model):
-    __tablename__ = 'keyword'
+class GalleryImage(db.Model):
+    """An association object used to model the images contained in a gallery as an ordered list."""
 
+    __tablename__ = 'gallery_image'
+
+    gallery_id = db.Column(db.Integer, db.ForeignKey('gallery.id'), primary_key=True)
     image_id = db.Column(db.Integer, db.ForeignKey('image.id'), primary_key=True)
-    keyword = db.Column(db.String, nullable=False)
-    position = db.Column(db.Integer, primary_key=True)
+    position = db.Column(db.Integer, nullable=False)
 
-    image = db.relationship("Image", back_populates="keywords")
+    gallery = db.relationship("Gallery", back_populates="images")
+    image = db.relationship("Image", back_populates="galleries")

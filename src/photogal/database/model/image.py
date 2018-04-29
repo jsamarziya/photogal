@@ -16,15 +16,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from photogal.database import db, register_last_modified_trigger_listener
-from sqlalchemy import text
 
 
 class Image(db.Model):
+    """A photographic image."""
+
     __tablename__ = "image"
 
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
-    last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
+    created = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
+    last_modified = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
     name = db.Column(db.String)
     description = db.Column(db.String)
     # The filename that was specified when the image was uploaded

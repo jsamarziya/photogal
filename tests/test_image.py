@@ -21,7 +21,7 @@ from datetime import datetime
 import pytest
 from assertpy import assert_that
 from flask_sqlalchemy import SQLAlchemy
-from photogal.model import Image, Keyword, Gallery, GalleryImage
+from photogal.database.model import Image, Keyword, Gallery, GalleryImage
 
 pytestmark = pytest.mark.usefixtures("db")
 
