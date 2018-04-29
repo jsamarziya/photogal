@@ -19,6 +19,7 @@ from collections import OrderedDict
 
 from flask_sqlalchemy import SQLAlchemy
 from graphene.test import Client
+from photogal.model import Image
 from photogal.model.gallery import Gallery
 
 
@@ -91,3 +92,71 @@ def test_create_gallery(graphene_client: Client):
     assert gallery.name == 'galleryName'
     assert gallery.public is True
     assert gallery.position == 78
+
+
+def test_query_nonexistent_image(graphene_client: Client):
+    result = graphene_client.execute('''
+    query {
+        image(imageId: 1) {
+            imageId
+        }
+    }
+    ''')
+    assert result == {
+        'data': {
+            'image': None
+        }
+    }
+
+
+def test_query_image(db: SQLAlchemy, graphene_client: Client):
+    image = Image(name="myImage")
+    db.session.add(image)
+    db.session.commit()
+    result = graphene_client.execute('''
+    query {
+        image(imageId: 1) {
+            imageId
+            name
+            public
+        }
+    }
+    ''')
+    assert result == {
+        'data':
+            OrderedDict([('image',
+                          OrderedDict([('imageId', 1),
+                                       ('name', 'myImage'),
+                                       ('public', False)
+                                       ])
+                          )])
+    }
+
+
+def test_create_image(graphene_client: Client):
+    result = graphene_client.execute('''
+    mutation {
+        createImage(name: "myImage") {
+            image {
+                imageId
+                name
+                public
+            }
+        }
+    }
+    ''')
+    assert result == {
+        'data':
+            OrderedDict([('createImage',
+                          OrderedDict([('image',
+                                        OrderedDict([('imageId', 1),
+                                                     ('name', 'myImage'),
+                                                     ('public', False)
+                                                     ])
+                                        )])
+                          )])
+    }
+    image = Image.query.get(1)
+    assert image.id == 1
+    assert image.name == 'myImage'
+    assert image.public is False
