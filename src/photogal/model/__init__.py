@@ -15,7 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from photogal.database import db
+
 from .gallery import Gallery
 from .gallery_image import GalleryImage
 from .image import Image
 from .keyword import Keyword
+
+Image.public = db.column_property(
+    db.select([db.func.count(Gallery.id) > 0]).where(db.and_(Gallery.public,
+                                                             GalleryImage.gallery_id == Gallery.id,
+                                                             GalleryImage.image_id == Image.id))
+)

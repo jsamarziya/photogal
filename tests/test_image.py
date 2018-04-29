@@ -21,7 +21,7 @@ from datetime import datetime
 import pytest
 from assertpy import assert_that
 from flask_sqlalchemy import SQLAlchemy
-from photogal.model import Image, Keyword
+from photogal.model import Image, Keyword, Gallery, GalleryImage
 
 pytestmark = pytest.mark.usefixtures("db")
 
@@ -91,3 +91,20 @@ def test_keywords(db: SQLAlchemy):
     image.keywords.remove(image.keywords[0])
     db.session.commit()
     assert_that([i.keyword for i in image.keywords]).contains_sequence("bar", "baz")
+
+
+def test_public(db: SQLAlchemy):
+    image = Image()
+    db.session.add(image)
+    db.session.commit()
+    assert_that(image.public).is_false()
+
+    gallery = Gallery(public=False)
+    gallery.images.append(GalleryImage(image=image, position=0))
+    db.session.add(gallery)
+    db.session.commit()
+    assert_that(image.public).is_false()
+
+    gallery.public = True
+    db.session.commit()
+    assert_that(image.public).is_true()
