@@ -26,6 +26,3 @@ class Keyword(db.Model):
     position = db.Column(db.Integer, primary_key=True)
 
     image = db.relationship("Image", back_populates="keywords")
-
-# TODO: unique constraint on image_id & position
-# TODO: unique constraint on image_id & keyword
