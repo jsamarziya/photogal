@@ -35,7 +35,6 @@ def test_gallery_images(db):
 
     gallery.images[1].position = 2
     gallery.images[2].position = 1
-    db.session.add(gallery)
     db.session.commit()
 
     assert_that([i.image for i in gallery.images]).contains_sequence(image1, image3, image2)
