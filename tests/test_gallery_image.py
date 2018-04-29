@@ -30,18 +30,15 @@ def test_gallery_images(db):
     gallery.images.append(GalleryImage(image=image1, position=0))
     db.session.add(gallery)
     db.session.commit()
-
     assert_that([i.image for i in gallery.images]).contains_sequence(image1, image2, image3)
 
     gallery.images[1].position = 2
     gallery.images[2].position = 1
     db.session.commit()
-
     assert_that([i.image for i in gallery.images]).contains_sequence(image1, image3, image2)
 
     db.session.delete(gallery)
     db.session.commit()
-
     assert_that(db.session.query(Image).count()).is_equal_to(3)
 
 
@@ -51,25 +48,21 @@ def test_image_galleries(db):
     gallery1.images.append(GalleryImage(image=image, position=0))
     db.session.add(gallery1)
     db.session.commit()
-
     assert_that([i.gallery for i in image.galleries]).contains_only(gallery1)
 
     gallery2 = Gallery(name="gallery2")
     gallery2.images.append(GalleryImage(image=image, position=0))
     db.session.add(gallery2)
     db.session.commit()
-
     assert_that([i.gallery for i in image.galleries]).contains_only(gallery1, gallery2)
 
     gallery1.images.remove(gallery1.images[0])
     db.session.commit()
-
     assert_that([i.gallery for i in image.galleries]).contains_only(gallery2)
     assert_that(gallery1.images).is_empty()
     assert_that([i.image for i in gallery2.images]).contains_only(image)
 
     db.session.delete(image)
     db.session.commit()
-
     assert_that(db.session.query(Gallery).count()).is_equal_to(2)
     assert_that(gallery2.images).is_empty()
