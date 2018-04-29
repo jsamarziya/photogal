@@ -27,8 +27,9 @@ class Gallery(db.Model):
     last_modified = db.Column(db.DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     name = db.Column(db.String)
     description = db.Column(db.String)
+    # TODO position should technically be non-null...
     position = db.Column(db.Integer)
-    public = db.Column(db.Boolean)
+    public = db.Column(db.Boolean, nullable=False, server_default=text("0"))
     gallery_image_id = db.Column(db.Integer, db.ForeignKey("image.id"))
 
     images = db.relationship("GalleryImage",
