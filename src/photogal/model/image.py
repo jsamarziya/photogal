@@ -30,6 +30,7 @@ class Image(db.Model):
     # The filename that was specified when the image was uploaded
     filename = db.Column(db.String)
     # TODO: not sure if we need width + height. What do we use it for?
+    # TODO: width and height were formerly non-null...
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)
     creation_day = db.Column(db.Integer)
