@@ -88,7 +88,7 @@ class CreateGallery(graphene.Mutation):
 
 class DeleteGallery(graphene.Mutation):
     class Arguments:
-        gallery_id = graphene.Int(required=True)
+        gallery_id = graphene.Int(description="The gallery id.", required=True)
 
     gallery = graphene.Field(lambda: Gallery)
     ok = graphene.Boolean(description="True if the gallery was deleted, False otherwise.")
