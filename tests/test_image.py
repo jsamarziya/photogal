@@ -108,3 +108,30 @@ def test_public(db: SQLAlchemy):
     gallery.public = True
     db.session.commit()
     assert_that(image.public).is_true()
+
+
+def test_set_keywords(db: SQLAlchemy):
+    image = Image()
+    db.session.add(image)
+    db.session.commit()
+    assert_that(image.keywords).is_empty()
+
+    image.set_keywords(*"foo bar baz".split())
+    db.session.commit()
+    assert_that([i.keyword for i in image.keywords]).contains_sequence("foo", "bar", "baz")
+
+    image.set_keywords(*"foo baz bar".split())
+    db.session.commit()
+    assert_that([i.keyword for i in image.keywords]).contains_sequence("foo", "baz", "bar")
+
+    image.set_keywords(*"a b".split())
+    db.session.commit()
+    assert_that([i.keyword for i in image.keywords]).contains_sequence("a", "b")
+
+    image.set_keywords("one")
+    db.session.commit()
+    assert_that([i.keyword for i in image.keywords]).contains_sequence("one")
+
+    image.set_keywords()
+    db.session.commit()
+    assert_that(image.keywords).is_empty()

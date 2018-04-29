@@ -17,6 +17,8 @@
 
 from photogal.database import db, register_last_modified_trigger_listener
 
+from .keyword import Keyword
+
 
 class Image(db.Model):
     """A photographic image."""
@@ -53,10 +55,8 @@ class Image(db.Model):
         # TODO parse date, set creation_ fields
         pass
 
-    def set_keywords(self, keywords):
-        # TODO split keywords, set keywords collection
-        # can accept str or iterable
-        pass
+    def set_keywords(self, *keywords):
+        self.keywords = [Keyword(image=self, keyword=keyword, position=index) for index, keyword in enumerate(keywords)]
 
 
 register_last_modified_trigger_listener(Image.__table__)
