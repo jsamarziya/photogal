@@ -105,6 +105,58 @@ class DeleteGallery(graphene.Mutation):
         return DeleteGallery(gallery=gallery, ok=ok)
 
 
+class CreateImage(graphene.Mutation):
+    class Arguments:
+        created = graphene.DateTime(description="The time at which the image was created.", required=False)
+        last_modified = graphene.DateTime(description="The time at which the image was last modified.",
+                                          required=False)
+        name = graphene.String(description="The name of the image.", required=False)
+        description = graphene.String(description="The description of the image.", required=False)
+        creation_date = graphene.String(description="The time at which the image was taken.", required=False)
+        keywords = graphene.String(description="The keywords.", required=False)
+
+    image = graphene.Field(lambda: Image)
+
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def mutate(self, info,
+               created=None,
+               last_modified=None,
+               name=None,
+               description=None,
+               creation_date=None,
+               keywords=None):
+        image = ImageModel(
+            created=created,
+            last_modified=last_modified,
+            name=name,
+            description=description
+        )
+        image.set_creation_date(creation_date)
+        image.set_keywords(keywords)
+        db.session.add(image)
+        db.session.commit()
+        return CreateImage(image=image)
+
+
+class DeleteImage(graphene.Mutation):
+    class Arguments:
+        image_id = graphene.Int(description="The image id.", required=True)
+
+    image = graphene.Field(lambda: Image)
+    ok = graphene.Boolean(description="True if the image was deleted, False otherwise.")
+
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def mutate(self, info, image_id):
+        image = ImageModel.query.get(image_id)
+        if image:
+            db.session.delete(image)
+            db.session.commit()
+            ok = True
+        else:
+            ok = False
+        return DeleteImage(image=image, ok=ok)
+
+
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
     gallery = graphene.Field(Gallery, gallery_id=graphene.Int())
@@ -124,6 +176,9 @@ class Query(graphene.ObjectType):
 class Mutations(graphene.ObjectType):
     create_gallery = CreateGallery.Field(description="Creates a new gallery.")
     delete_gallery = DeleteGallery.Field(description="Deletes the specified gallery.")
+
+    create_image = CreateImage.Field(description="Creates a new image.")
+    delete_image = DeleteImage.Field(description="Deletes the specified image.")
 
 
 schema = graphene.Schema(query=Query, mutation=Mutations)
