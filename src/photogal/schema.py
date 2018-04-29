@@ -41,11 +41,17 @@ class Image(SQLAlchemyObjectType):
         interfaces = (relay.Node,)
 
     image_id = graphene.Int()
+    keywords = graphene.List(graphene.String)
 
     # noinspection PyUnusedLocal
     def resolve_image_id(self, info):
         # noinspection PyUnresolvedReferences
         return self.id
+
+    # noinspection PyUnusedLocal
+    def resolve_keywords(self, info):
+        # noinspection PyTypeChecker
+        return [keyword.keyword for keyword in self.keywords]
 
 
 class CreateGallery(graphene.Mutation):
@@ -113,7 +119,7 @@ class CreateImage(graphene.Mutation):
         name = graphene.String(description="The name of the image.", required=False)
         description = graphene.String(description="The description of the image.", required=False)
         creation_date = graphene.String(description="The time at which the image was taken.", required=False)
-        keywords = graphene.String(description="The keywords.", required=False)
+        keywords = graphene.List(graphene.String, description="The keywords.", required=False)
 
     image = graphene.Field(lambda: Image)
 
@@ -132,7 +138,7 @@ class CreateImage(graphene.Mutation):
             description=description
         )
         image.set_creation_date(creation_date)
-        image.set_keywords(keywords)
+        image.set_keywords(*([] if keywords is None else keywords))
         db.session.add(image)
         db.session.commit()
         return CreateImage(image=image)
