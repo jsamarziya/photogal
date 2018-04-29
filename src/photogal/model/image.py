@@ -47,5 +47,14 @@ class Image(db.Model):
     def __repr__(self):
         return "<Image (id={}, name='{}')>".format(self.id, self.name)
 
+    def set_creation_date(self, creation_date):
+        # TODO parse date, set creation_ fields
+        pass
+
+    def set_keywords(self, keywords):
+        # TODO split keywords, set keywords collection
+        # can accept str or iterable
+        pass
+
 
 register_last_modified_trigger_listener(Image.__table__)
