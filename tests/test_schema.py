@@ -15,12 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from collections import OrderedDict
+import json
 
 from assertpy import assert_that
 from flask_sqlalchemy import SQLAlchemy
 from graphene.test import Client
+from graphql_relay import to_global_id
 from photogal.database.model import Gallery, Image
+
+
+def test_query_gallery_no_id(graphene_client: Client):
+    result = graphene_client.execute('''
+    query {
+        gallery {
+            galleryId
+        }
+    }
+    ''')
+    assert_that(result['errors'][0]['message']).is_equal_to('Either id or gallery_id must be specified')
 
 
 def test_query_nonexistent_gallery(graphene_client: Client):
@@ -31,11 +43,14 @@ def test_query_nonexistent_gallery(graphene_client: Client):
         }
     }
     ''')
-    assert_that(result).is_equal_to({
-        'data': {
-            'gallery': None
+
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "gallery": null
         }
-    })
+    }
+    ''')
 
 
 def test_query_gallery(db: SQLAlchemy, graphene_client: Client):
@@ -51,15 +66,51 @@ def test_query_gallery(db: SQLAlchemy, graphene_client: Client):
         }
     }
     ''')
-    assert_that(result).is_equal_to({
-        'data':
-            OrderedDict([('gallery',
-                          OrderedDict([('galleryId', 1),
-                                       ('name', 'myGallery'),
-                                       ('public', False)
-                                       ])
-                          )])
-    })
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "gallery": {
+                "galleryId": 1,
+                "name": "myGallery",
+                "public": false
+            }
+        }
+    }
+    ''')
+
+
+def test_query_gallery_by_id(db: SQLAlchemy, graphene_client: Client):
+    gallery = Gallery()
+    db.session.add(gallery)
+    db.session.commit()
+
+    result = graphene_client.execute(f'''
+    query {{
+        gallery(id: "{to_global_id("Gallery", 1)}") {{
+            galleryId
+        }}
+    }}
+    ''')
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "gallery": {
+                "galleryId": 1
+            }
+        }
+    }
+    ''')
+
+
+def test_query_gallery_by_id_wrong_type(graphene_client: Client):
+    result = graphene_client.execute(f'''
+    query {{
+        gallery(id: "{to_global_id("Image", 1)}") {{
+            galleryId
+        }}
+    }}
+    ''')
+    assert_that(result['errors'][0]['message']).is_equal_to("Wrong id type (expected 'Gallery', got 'Image'")
 
 
 def test_create_gallery(graphene_client: Client):
@@ -75,23 +126,35 @@ def test_create_gallery(graphene_client: Client):
         }
     }
     ''')
-    assert_that(result).is_equal_to({
-        'data':
-            OrderedDict([('createGallery',
-                          OrderedDict([('gallery',
-                                        OrderedDict([('galleryId', 1),
-                                                     ('name', 'galleryName'),
-                                                     ('public', True),
-                                                     ('position', 78)
-                                                     ])
-                                        )])
-                          )])
-    })
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "createGallery": {
+                "gallery": {
+                    "galleryId": 1,
+                    "name": "galleryName",
+                    "public": true,
+                    "position": 78
+                }
+            }
+        }
+    }''')
     gallery = Gallery.query.get(1)
     assert_that(gallery.id).is_equal_to(1)
     assert_that(gallery.name).is_equal_to('galleryName')
     assert_that(gallery.public).is_true()
     assert_that(gallery.position).is_equal_to(78)
+
+
+def test_query_image_no_id(graphene_client: Client):
+    result = graphene_client.execute('''
+    query {
+        image {
+            imageId
+        }
+    }
+    ''')
+    assert_that(result['errors'][0]['message']).is_equal_to('Either id or image_id must be specified')
 
 
 def test_query_nonexistent_image(graphene_client: Client):
@@ -102,11 +165,13 @@ def test_query_nonexistent_image(graphene_client: Client):
         }
     }
     ''')
-    assert_that(result).is_equal_to({
-        'data': {
-            'image': None
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "image": null
         }
-    })
+    }
+    ''')
 
 
 def test_query_image(db: SQLAlchemy, graphene_client: Client):
@@ -124,16 +189,55 @@ def test_query_image(db: SQLAlchemy, graphene_client: Client):
         }
     }
     ''')
-    assert_that(result).is_equal_to({
-        'data':
-            OrderedDict([('image',
-                          OrderedDict([('imageId', 1),
-                                       ('name', 'myImage'),
-                                       ('public', False),
-                                       ('keywords', ["keyword1", "keyword2"])
-                                       ])
-                          )])
-    })
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    { 
+        "data": {
+            "image": {
+                 "imageId": 1,
+                  "name": "myImage",
+                   "public": false,
+                   "keywords": [
+                       "keyword1", 
+                       "keyword2"
+                   ]
+            }
+        }
+    }
+    ''')
+
+
+def test_query_image_by_id(db: SQLAlchemy, graphene_client: Client):
+    image = Image()
+    db.session.add(image)
+    db.session.commit()
+
+    result = graphene_client.execute(f'''
+    query {{
+        image(id: "{to_global_id("Image", 1)}") {{
+            imageId
+        }}
+    }}
+    ''')
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "image": {
+                "imageId": 1
+            }
+        }
+    }
+    ''')
+
+
+def test_query_image_by_id_wrong_type(graphene_client: Client):
+    result = graphene_client.execute(f'''
+    query {{
+        image(id: "{to_global_id("Gallery", 1)}") {{
+            imageId
+        }}
+    }}
+    ''')
+    assert_that(result['errors'][0]['message']).is_equal_to("Wrong id type (expected 'Image', got 'Gallery'")
 
 
 def test_create_image(graphene_client: Client):
@@ -149,18 +253,20 @@ def test_create_image(graphene_client: Client):
         }
     }
     ''')
-    assert_that(result).is_equal_to({
-        'data':
-            OrderedDict([('createImage',
-                          OrderedDict([('image',
-                                        OrderedDict([('imageId', 1),
-                                                     ('name', 'myImage'),
-                                                     ('public', False),
-                                                     ('keywords', [])
-                                                     ])
-                                        )])
-                          )])
-    })
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "createImage": {
+                "image": {
+                    "imageId": 1,
+                    "name": "myImage",
+                    "public": false,
+                    "keywords": []
+                }
+            }
+        }
+    }
+    ''')
     image = Image.query.get(1)
     assert_that(image.id).is_equal_to(1)
     assert_that(image.name).is_equal_to('myImage')
@@ -178,14 +284,20 @@ def test_create_image_with_keywords(graphene_client: Client):
         }
     }
     ''')
-    assert_that(result).is_equal_to({
-        'data':
-            OrderedDict([('createImage',
-                          OrderedDict([('image',
-                                        OrderedDict([('keywords',
-                                                      ['foo', 'bar', 'baz'])])
-                                        )])
-                          )])
-    })
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "createImage": {
+                "image": {
+                    "keywords": [
+                        "foo",
+                        "bar",
+                        "baz"
+                    ]
+                }
+            }
+        }
+    }
+    ''')
     image = Image.query.get(1)
     assert_that([keyword.keyword for keyword in image.keywords]).contains_sequence("foo", "bar", "baz")

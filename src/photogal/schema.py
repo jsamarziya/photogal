@@ -18,6 +18,7 @@
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+from graphql_relay import from_global_id
 from photogal.database import db
 from photogal.database.model import Gallery as GalleryModel, Image as ImageModel
 
@@ -165,17 +166,29 @@ class DeleteImage(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
-    gallery = graphene.Field(Gallery, gallery_id=graphene.Int())
-    image = graphene.Field(Image, image_id=graphene.Int())
+    gallery = graphene.Field(Gallery, id=graphene.ID(), gallery_id=graphene.Int())
+    image = graphene.Field(Image, id=graphene.ID(), image_id=graphene.Int())
     galleries = SQLAlchemyConnectionField(Gallery)
     images = SQLAlchemyConnectionField(Image)
 
-    # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def resolve_gallery(self, info, gallery_id=None):
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal,PyShadowingBuiltins
+    def resolve_gallery(self, info, id=None, gallery_id=None):
+        if gallery_id is None:
+            if id is None:
+                raise ValueError("Either id or gallery_id must be specified")
+            type, gallery_id = from_global_id(id)
+            if type != "Gallery":
+                raise ValueError("Wrong id type (expected 'Gallery', got '{}'".format(type))
         return GalleryModel.query.get(gallery_id)
 
-    # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def resolve_image(self, info, image_id=None):
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal,PyShadowingBuiltins
+    def resolve_image(self, info, id=None, image_id=None):
+        if image_id is None:
+            if id is None:
+                raise ValueError("Either id or image_id must be specified")
+            type, image_id = from_global_id(id)
+            if type != "Image":
+                raise ValueError("Wrong id type (expected 'Image', got '{}'".format(type))
         return ImageModel.query.get(image_id)
 
 
