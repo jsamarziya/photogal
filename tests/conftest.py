@@ -18,6 +18,7 @@
 import photogal.application
 import photogal.database
 import pytest
+from assertpy.assertpy import AssertionBuilder
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from graphene.test import Client
@@ -40,3 +41,22 @@ def db(app) -> SQLAlchemy:
 @pytest.fixture
 def graphene_client(db) -> Client:
     return Client(schema)
+
+
+def remove_whitespace(s):
+    import string
+    return s.translate({ord(c): None for c in string.whitespace})
+
+
+def is_equal_to_ignoring_whitespace(self, other):
+    from assertpy.assertpy import str_types
+    if not isinstance(self.val, str_types):
+        raise TypeError('val is not a string')
+    if not isinstance(other, str_types):
+        raise TypeError('given arg must be a string')
+    if remove_whitespace(self.val) != remove_whitespace(other):
+        self._err('Expected <%s> to be equal (ignoring whitespace) to <%s>, but was not.' % (self.val, other))
+    return self
+
+
+AssertionBuilder.is_equal_to_ignoring_whitespace = is_equal_to_ignoring_whitespace
