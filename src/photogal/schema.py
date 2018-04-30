@@ -67,7 +67,7 @@ class CreateGallery(graphene.Mutation):
             required=False)
         gallery_image_id = graphene.Int(description="The id of the gallery image.", required=False)
 
-    gallery = graphene.Field(lambda: Gallery)
+    gallery = graphene.Field(Gallery)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def mutate(self, info,
@@ -96,7 +96,7 @@ class DeleteGallery(graphene.Mutation):
     class Arguments:
         gallery_id = graphene.Int(description="The gallery id.", required=True)
 
-    gallery = graphene.Field(lambda: Gallery)
+    gallery = graphene.Field(Gallery)
     ok = graphene.Boolean(description="True if the gallery was deleted, False otherwise.")
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
@@ -121,7 +121,7 @@ class CreateImage(graphene.Mutation):
         creation_date = graphene.String(description="The time at which the image was taken.", required=False)
         keywords = graphene.List(graphene.String, description="The keywords.", required=False)
 
-    image = graphene.Field(lambda: Image)
+    image = graphene.Field(Image)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def mutate(self, info,
@@ -148,7 +148,7 @@ class DeleteImage(graphene.Mutation):
     class Arguments:
         image_id = graphene.Int(description="The image id.", required=True)
 
-    image = graphene.Field(lambda: Image)
+    image = graphene.Field(Image)
     ok = graphene.Boolean(description="True if the image was deleted, False otherwise.")
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
