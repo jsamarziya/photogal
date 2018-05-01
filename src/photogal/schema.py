@@ -23,8 +23,6 @@ from photogal.database import db
 from photogal.database.model import Gallery as GalleryModel, Image as ImageModel
 
 
-# TODO implement description i18n messages for reuse
-
 class Gallery(SQLAlchemyObjectType):
     class Meta:
         model = GalleryModel
