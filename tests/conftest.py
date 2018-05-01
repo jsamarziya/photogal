@@ -22,7 +22,7 @@ from assertpy.assertpy import AssertionBuilder
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from graphene.test import Client
-from photogal.schema import schema
+from photogal.graphql import schema
 
 
 @pytest.fixture
