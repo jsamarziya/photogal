@@ -20,15 +20,15 @@ from assertpy import assert_that
 from flask_sqlalchemy import SQLAlchemy
 from graphene.test import Client
 from graphql_relay import to_global_id
-from photogal.database.model import Gallery
+from photogal.database.model import Image
 
 
-def test_delete_nonexistent_gallery(graphene_client: Client):
+def test_delete_nonexistent_image(graphene_client: Client):
     result = graphene_client.execute('''
     mutation {
-        deleteGallery(galleryId: 1) {
-            gallery {
-                galleryId,
+        deleteImage(imageId: 1) {
+            image {
+                imageId,
                 name
             }
             ok
@@ -38,26 +38,26 @@ def test_delete_nonexistent_gallery(graphene_client: Client):
     assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
     {
         "data": {
-            "deleteGallery": {
-                "gallery": null,
+            "deleteImage": {
+                "image": null,
                 "ok": false
             }
         }
     }''')
 
 
-def test_delete_gallery_by_id(db: SQLAlchemy, graphene_client: Client):
-    gallery = Gallery(name="myGallery")
-    db.session.add(gallery)
+def test_delete_image_by_id(db: SQLAlchemy, graphene_client: Client):
+    image = Image(name="myImage")
+    db.session.add(image)
     db.session.commit()
-    assert_that(Gallery.query.get(1)).is_not_none()
+    assert_that(Image.query.get(1)).is_not_none()
 
     result = graphene_client.execute(f'''
     mutation {{
-        deleteGallery(id: "{to_global_id("Gallery", 1)}") {{
-            gallery {{
-                galleryId,
-                name                
+        deleteImage(id: "{to_global_id("Image", 1)}") {{
+            image {{
+                imageId
+                name
             }}
             ok
         }}
@@ -66,29 +66,29 @@ def test_delete_gallery_by_id(db: SQLAlchemy, graphene_client: Client):
     assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
     {
         "data": {
-            "deleteGallery": {
-                "gallery": {
-                    "galleryId": 1,
-                    "name": "myGallery"
+            "deleteImage": {
+                "image": {
+                    "imageId": 1,
+                    "name": "myImage"
                 },
                 "ok": true
             }
         }
     }''')
-    assert_that(Gallery.query.get(1)).is_none()
+    assert_that(Image.query.get(1)).is_none()
 
 
-def test_delete_gallery_by_gallery_id(db: SQLAlchemy, graphene_client: Client):
-    gallery = Gallery(name="myGallery")
-    db.session.add(gallery)
+def test_delete_image_by_image_id(db: SQLAlchemy, graphene_client: Client):
+    image = Image(name="myImage")
+    db.session.add(image)
     db.session.commit()
-    assert_that(Gallery.query.get(1)).is_not_none()
+    assert_that(Image.query.get(1)).is_not_none()
 
     result = graphene_client.execute('''
     mutation {
-        deleteGallery(galleryId: 1) {
-            gallery {
-                galleryId,
+        deleteImage(imageId: 1) {
+            image {
+                imageId,
                 name
             }
             ok
@@ -98,13 +98,13 @@ def test_delete_gallery_by_gallery_id(db: SQLAlchemy, graphene_client: Client):
     assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
     {
         "data": {
-            "deleteGallery": {
-                "gallery": {
-                    "galleryId": 1,
-                    "name": "myGallery"
+            "deleteImage": {
+                "image": {
+                    "imageId": 1,
+                    "name": "myImage"
                 },
                 "ok": true
             }
         }
     }''')
-    assert_that(Gallery.query.get(1)).is_none()
+    assert_that(Image.query.get(1)).is_none()

@@ -23,6 +23,28 @@ from photogal.database import db
 from photogal.database.model import Gallery as GalleryModel, Image as ImageModel
 
 
+# noinspection PyShadowingBuiltins
+def fetch_gallery(id=None, gallery_id=None):
+    if gallery_id is None:
+        if id is None:
+            raise ValueError("Either id or gallery_id must be specified")
+        type, gallery_id = from_global_id(id)
+        if type != "Gallery":
+            raise ValueError("Wrong id type (expected 'Gallery', got '{}'".format(type))
+    return GalleryModel.query.get(gallery_id)
+
+
+# noinspection PyShadowingBuiltins
+def fetch_image(id=None, image_id=None):
+    if image_id is None:
+        if id is None:
+            raise ValueError("Either id or image_id must be specified")
+        type, image_id = from_global_id(id)
+        if type != "Image":
+            raise ValueError("Wrong id type (expected 'Image', got '{}'".format(type))
+    return ImageModel.query.get(image_id)
+
+
 class Gallery(SQLAlchemyObjectType):
     class Meta:
         model = GalleryModel
@@ -95,14 +117,15 @@ class CreateGallery(graphene.Mutation):
 
 class DeleteGallery(graphene.Mutation):
     class Arguments:
-        gallery_id = graphene.Int(description="The gallery id.", required=True)
+        id = graphene.ID(description="The id.")
+        gallery_id = graphene.Int(description="The gallery id.")
 
     gallery = graphene.Field(Gallery)
     ok = graphene.Boolean(description="True if the gallery was deleted, False otherwise.")
 
-    # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def mutate(self, info, gallery_id):
-        gallery = GalleryModel.query.get(gallery_id)
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal,PyShadowingBuiltins
+    def mutate(self, info, id=None, gallery_id=None):
+        gallery = fetch_gallery(id, gallery_id)
         if gallery:
             db.session.delete(gallery)
             db.session.commit()
@@ -147,14 +170,15 @@ class CreateImage(graphene.Mutation):
 
 class DeleteImage(graphene.Mutation):
     class Arguments:
-        image_id = graphene.Int(description="The image id.", required=True)
+        id = graphene.ID(description="The id.")
+        image_id = graphene.Int(description="The image id.")
 
     image = graphene.Field(Image)
     ok = graphene.Boolean(description="True if the image was deleted, False otherwise.")
 
-    # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def mutate(self, info, image_id):
-        image = ImageModel.query.get(image_id)
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal,PyShadowingBuiltins
+    def mutate(self, info, id=None, image_id=None):
+        image = fetch_image(id, image_id)
         if image:
             db.session.delete(image)
             db.session.commit()
@@ -173,23 +197,11 @@ class Query(graphene.ObjectType):
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal,PyShadowingBuiltins
     def resolve_gallery(self, info, id=None, gallery_id=None):
-        if gallery_id is None:
-            if id is None:
-                raise ValueError("Either id or gallery_id must be specified")
-            type, gallery_id = from_global_id(id)
-            if type != "Gallery":
-                raise ValueError("Wrong id type (expected 'Gallery', got '{}'".format(type))
-        return GalleryModel.query.get(gallery_id)
+        return fetch_gallery(id, gallery_id)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal,PyShadowingBuiltins
     def resolve_image(self, info, id=None, image_id=None):
-        if image_id is None:
-            if id is None:
-                raise ValueError("Either id or image_id must be specified")
-            type, image_id = from_global_id(id)
-            if type != "Image":
-                raise ValueError("Wrong id type (expected 'Image', got '{}'".format(type))
-        return ImageModel.query.get(image_id)
+        return fetch_image(id, image_id)
 
 
 class Mutations(graphene.ObjectType):
