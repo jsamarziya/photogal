@@ -23,6 +23,8 @@ from photogal.database import db
 from photogal.database.model import Gallery as GalleryModel, Image as ImageModel
 
 
+# TODO implement description i18n messages for reuse
+
 class Gallery(SQLAlchemyObjectType):
     class Meta:
         model = GalleryModel
@@ -166,10 +168,10 @@ class DeleteImage(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
-    gallery = graphene.Field(Gallery, id=graphene.ID(), gallery_id=graphene.Int())
-    image = graphene.Field(Image, id=graphene.ID(), image_id=graphene.Int())
-    galleries = SQLAlchemyConnectionField(Gallery)
-    images = SQLAlchemyConnectionField(Image)
+    gallery = graphene.Field(Gallery, id=graphene.ID(), gallery_id=graphene.Int(), description="Fetches a gallery.")
+    image = graphene.Field(Image, id=graphene.ID(), image_id=graphene.Int(), description="Fetches an image.")
+    galleries = SQLAlchemyConnectionField(Gallery, description="A Gallery connection.")
+    images = SQLAlchemyConnectionField(Image, description="An Image connection.")
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal,PyShadowingBuiltins
     def resolve_gallery(self, info, id=None, gallery_id=None):
