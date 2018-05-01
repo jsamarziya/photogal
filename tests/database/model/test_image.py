@@ -76,23 +76,6 @@ def test_last_modified(db: SQLAlchemy):
     assert_that(image.last_modified).is_not_equal_to(last_modified)
 
 
-def test_keywords(db: SQLAlchemy):
-    image = Image()
-    db.session.add(image)
-    db.session.commit()
-    assert_that(image.keywords).is_empty()
-
-    image.keywords.append(Keyword(image=image, position=0, keyword="foo"))
-    image.keywords.append(Keyword(image=image, position=2, keyword="baz"))
-    image.keywords.append(Keyword(image=image, position=1, keyword="bar"))
-    db.session.commit()
-    assert_that([i.keyword for i in image.keywords]).contains_sequence("foo", "bar", "baz")
-
-    image.keywords.remove(image.keywords[0])
-    db.session.commit()
-    assert_that([i.keyword for i in image.keywords]).contains_sequence("bar", "baz")
-
-
 def test_public(db: SQLAlchemy):
     image = Image()
     db.session.add(image)
@@ -108,6 +91,23 @@ def test_public(db: SQLAlchemy):
     gallery.public = True
     db.session.commit()
     assert_that(image.public).is_true()
+
+
+def test_keywords(db: SQLAlchemy):
+    image = Image()
+    db.session.add(image)
+    db.session.commit()
+    assert_that(image.keywords).is_empty()
+
+    image.keywords.append(Keyword(image=image, position=0, keyword="foo"))
+    image.keywords.append(Keyword(image=image, position=2, keyword="baz"))
+    image.keywords.append(Keyword(image=image, position=1, keyword="bar"))
+    db.session.commit()
+    assert_that([i.keyword for i in image.keywords]).contains_sequence("foo", "bar", "baz")
+
+    image.keywords.remove(image.keywords[0])
+    db.session.commit()
+    assert_that([i.keyword for i in image.keywords]).contains_sequence("bar", "baz")
 
 
 def test_set_keywords(db: SQLAlchemy):
