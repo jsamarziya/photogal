@@ -1,4 +1,4 @@
-.PHONY: clean dist doctest envclean init pytest run test
+.PHONY: clean dist doctest envclean init pytest run test upgrade
 
 PYTHON = python3.6
 
@@ -7,6 +7,9 @@ init:
 	venv/bin/pip install --upgrade pip
 	venv/bin/pip install assertpy pytest pytest-flask wheel
 	venv/bin/pip install -e .
+
+upgrade:
+	venv/bin/pip install --upgrade --upgrade-strategy eager -e  .
 
 run:
 	FLASK_APP=photogal \
