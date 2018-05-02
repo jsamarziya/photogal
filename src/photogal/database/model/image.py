@@ -49,7 +49,7 @@ class Image(db.Model):
                                cascade="save-update, merge, delete, delete-orphan")
 
     def __repr__(self):
-        return "<Image (id={}, name='{}')>".format(self.id, self.name)
+        return f"<Image (id={self.id}, name='{self.name}')>"
 
     def set_creation_date(self, creation_date):
         # TODO parse date, set creation_ fields

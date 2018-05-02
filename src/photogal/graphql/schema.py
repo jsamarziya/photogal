@@ -30,7 +30,7 @@ def resolve_gallery_id(id: int = None, gallery_id: str = None) -> int:
             raise ValueError("Either id or gallery_id must be specified")
         type, gallery_id = from_global_id(id)
         if type != "Gallery":
-            raise ValueError("Wrong id type (expected 'Gallery', got '{}'".format(type))
+            raise ValueError(f"Wrong id type (expected 'Gallery', got '{type}'")
     return gallery_id
 
 
@@ -45,7 +45,7 @@ def resolve_image_id(id: int = None, image_id: str = None) -> int:
             raise ValueError("Either id or image_id must be specified")
         type, image_id = from_global_id(id)
         if type != "Image":
-            raise ValueError("Wrong id type (expected 'Image', got '{}'".format(type))
+            raise ValueError(f"Wrong id type (expected 'Image', got '{type}'")
     return image_id
 
 

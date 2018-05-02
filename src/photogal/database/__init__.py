@@ -47,13 +47,13 @@ def register_last_modified_trigger_listener(table: Table, id_column: str = "id")
     :param table: the table to add the trigger to
     :param id_column: the name of the id column
     """
-    statement = """\
-CREATE TRIGGER update_last_modified_{0} AFTER UPDATE ON {0}
+    statement = f"""\
+CREATE TRIGGER update_last_modified_{table.name} AFTER UPDATE ON {table.name}
   BEGIN
-    UPDATE {0} SET last_modified = datetime('now') WHERE {1}=new.{1};
+    UPDATE {table.name} SET last_modified = datetime('now') WHERE {id_column}=new.{id_column};
   END;"""
 
-    event.listen(table, 'after_create', DDL(statement.format(table.name, id_column)))
+    event.listen(table, 'after_create', DDL(statement))
 
 
 from . import model

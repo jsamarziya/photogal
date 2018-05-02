@@ -1,6 +1,6 @@
 .PHONY: clean dist doctest envclean init pytest run test
 
-PYTHON = python3
+PYTHON = python3.6
 
 init:
 	$(PYTHON) -m venv venv

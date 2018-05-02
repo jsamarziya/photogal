@@ -26,6 +26,10 @@ from photogal.database.model.gallery import Gallery
 pytestmark = pytest.mark.usefixtures("db")
 
 
+def test_repr():
+    assert_that(repr(Gallery(id=5, name="myGallery"))).is_equal_to("<Gallery (id=5, name='myGallery')>")
+
+
 def test_query_all_no_galleries():
     assert_that(Gallery.query.all()).is_empty()
 

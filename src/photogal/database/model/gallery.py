@@ -39,7 +39,7 @@ class Gallery(db.Model):
                              cascade="save-update, merge, delete, delete-orphan")
 
     def __repr__(self):
-        return "<Gallery (id={}, name='{}')>".format(self.id, self.name)
+        return f"<Gallery (id={self.id}, name='{self.name}')>"
 
 
 register_last_modified_trigger_listener(Gallery.__table__)
