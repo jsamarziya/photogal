@@ -20,8 +20,7 @@ import json
 from flask import Flask
 from flask_graphql import GraphQLView
 from flask_sqlalchemy import SQLAlchemy
-
-from . import config as default_config
+from photogal import config as default_config
 
 
 def create_app(config=None) -> Flask:
@@ -61,6 +60,6 @@ def init_database(app: Flask) -> SQLAlchemy:
 
 
 def init_views(app: Flask):
-    from .graphql import schema
+    from photogal.graphql import schema
     app.add_url_rule('/graphql', view_func=GraphQLView.as_view('graphql', schema=schema, graphiql=True))
     app.add_url_rule('/graphql/batch', view_func=GraphQLView.as_view('graphql-batch', schema=schema, batch=True))

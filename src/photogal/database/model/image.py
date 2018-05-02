@@ -17,7 +17,7 @@
 
 from photogal.database import db, register_last_modified_trigger_listener
 
-from .keyword import Keyword
+from photogal.database.model.keyword import Keyword
 
 
 class Image(db.Model):
