@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import photogal.application
+import photogal
 import photogal.database
 import pytest
 from assertpy.assertpy import AssertionBuilder
@@ -28,7 +28,7 @@ from photogal.graphql import schema
 @pytest.fixture
 def app() -> Flask:
     from . import config
-    return photogal.application.create_app(config)
+    return photogal.create_app(config)
 
 
 # noinspection PyUnusedLocal
