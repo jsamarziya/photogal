@@ -61,5 +61,6 @@ def init_database(app: Flask) -> SQLAlchemy:
 
 def init_views(app: Flask):
     from photogal.graphql import schema
-    app.add_url_rule('/graphql', view_func=GraphQLView.as_view('graphql', schema=schema, graphiql=True))
+    enable_graphiql = app.env == 'development'
+    app.add_url_rule('/graphql', view_func=GraphQLView.as_view('graphql', schema=schema, graphiql=enable_graphiql))
     app.add_url_rule('/graphql/batch', view_func=GraphQLView.as_view('graphql-batch', schema=schema, batch=True))
