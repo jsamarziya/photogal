@@ -31,7 +31,6 @@ def test_delete_nonexistent_gallery(graphene_client: Client):
                 galleryId,
                 name
             }
-            ok
         }
     }
     ''')
@@ -39,8 +38,7 @@ def test_delete_nonexistent_gallery(graphene_client: Client):
     {
         "data": {
             "deleteGallery": {
-                "gallery": null,
-                "ok": false
+                "gallery": null
             }
         }
     }''')
@@ -59,7 +57,6 @@ def test_delete_gallery_by_id(db: SQLAlchemy, graphene_client: Client):
                 galleryId,
                 name                
             }}
-            ok
         }}
     }}
     ''')
@@ -70,8 +67,7 @@ def test_delete_gallery_by_id(db: SQLAlchemy, graphene_client: Client):
                 "gallery": {
                     "galleryId": 1,
                     "name": "myGallery"
-                },
-                "ok": true
+                }
             }
         }
     }''')
@@ -91,7 +87,6 @@ def test_delete_gallery_by_gallery_id(db: SQLAlchemy, graphene_client: Client):
                 galleryId,
                 name
             }
-            ok
         }
     }
     ''')
@@ -102,8 +97,7 @@ def test_delete_gallery_by_gallery_id(db: SQLAlchemy, graphene_client: Client):
                 "gallery": {
                     "galleryId": 1,
                     "name": "myGallery"
-                },
-                "ok": true
+                }
             }
         }
     }''')

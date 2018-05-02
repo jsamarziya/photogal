@@ -31,7 +31,6 @@ def test_delete_nonexistent_image(graphene_client: Client):
                 imageId,
                 name
             }
-            ok
         }
     }
     ''')
@@ -39,8 +38,7 @@ def test_delete_nonexistent_image(graphene_client: Client):
     {
         "data": {
             "deleteImage": {
-                "image": null,
-                "ok": false
+                "image": null
             }
         }
     }''')
@@ -59,7 +57,6 @@ def test_delete_image_by_id(db: SQLAlchemy, graphene_client: Client):
                 imageId
                 name
             }}
-            ok
         }}
     }}
     ''')
@@ -70,8 +67,7 @@ def test_delete_image_by_id(db: SQLAlchemy, graphene_client: Client):
                 "image": {
                     "imageId": 1,
                     "name": "myImage"
-                },
-                "ok": true
+                }
             }
         }
     }''')
@@ -91,7 +87,6 @@ def test_delete_image_by_image_id(db: SQLAlchemy, graphene_client: Client):
                 imageId,
                 name
             }
-            ok
         }
     }
     ''')
@@ -102,8 +97,7 @@ def test_delete_image_by_image_id(db: SQLAlchemy, graphene_client: Client):
                 "image": {
                     "imageId": 1,
                     "name": "myImage"
-                },
-                "ok": true
+                }
             }
         }
     }''')
