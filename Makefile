@@ -9,7 +9,7 @@ init:
 
 run:
 	FLASK_APP=photogal \
-	FLASK_DEBUG=1 \
+	FLASK_ENV=development \
 	venv/bin/flask run
 
 test: pytest
