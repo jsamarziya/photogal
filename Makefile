@@ -4,6 +4,7 @@ PYTHON = python3.6
 
 init:
 	$(PYTHON) -m venv venv
+	venv/bin/pip install --upgrade pip
 	venv/bin/pip install assertpy pytest pytest-flask wheel
 	venv/bin/pip install -e .
 
