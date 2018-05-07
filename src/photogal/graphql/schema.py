@@ -16,11 +16,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import graphene
+from flask import request
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from graphql_relay import from_global_id
 from photogal.database import db
 from photogal.database.model import Gallery as GalleryModel, Image as ImageModel
+
+from photogal.image import save_image_file, validate_image_file
 
 
 # noinspection PyShadowingBuiltins
@@ -51,6 +54,17 @@ def resolve_image_id(id: int = None, image_id: str = None) -> int:
 
 def fetch_image(image_id: int) -> ImageModel:
     return ImageModel.query.get(image_id)
+
+
+def get_image_file():
+    image_files = request.files.getlist("image")
+    image_count = len(image_files)
+    if image_count == 0:
+        return None
+    elif image_count != 1:
+        raise ValueError(f"Expected one image file, got {image_count}")
+    image_file = image_files[0]
+    return image_file
 
 
 class Gallery(SQLAlchemyObjectType):
@@ -160,16 +174,27 @@ class CreateImage(graphene.Mutation):
                description=None,
                creation_date=None,
                keywords=None):
-        image = ImageModel(
-            created=created,
-            last_modified=last_modified,
-            name=name,
-            description=description
-        )
-        image.set_creation_date(creation_date)
-        image.set_keywords(*([] if keywords is None else keywords))
+        def create_image():
+            # noinspection PyShadowingNames
+            image = ImageModel(
+                created=created,
+                last_modified=last_modified,
+                name=name,
+                description=description
+            )
+            image.set_creation_date(creation_date)
+            image.set_keywords(*([] if keywords is None else keywords))
+            return image
+
+        image = create_image()
+        image_file = get_image_file()
+        if image_file:
+            validate_image_file(image_file)
+            image.filename = image_file.filename
         db.session.add(image)
         db.session.commit()
+        if image_file:
+            save_image_file(image_file, image.id)
         return CreateImage(image=image)
 
 
