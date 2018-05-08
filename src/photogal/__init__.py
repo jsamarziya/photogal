@@ -33,6 +33,7 @@ def create_app(config=None) -> Flask:
     with app.app_context():
         load_config(config)
         init_database()
+        init_storage()
         init_views()
     return app
 
@@ -60,6 +61,18 @@ def init_database() -> SQLAlchemy:
     register_listeners()
     db.create_all()
     return db
+
+
+def init_storage():
+    """
+    Initializes the storage system.
+    """
+    image_directory = app.config["PHOTOGAL_IMAGE_DIRECTORY"]
+    if not os.path.exists(image_directory):
+        app.logger.info("Image directory %s does not exist. Creating...", image_directory)
+        os.makedirs(image_directory, 0o700, True)
+    elif not os.path.isdir(image_directory):
+        raise FileExistsError(f"{image_directory} is not a directory")
 
 
 def init_views():
