@@ -194,7 +194,7 @@ class CreateImage(graphene.Mutation):
         db.session.add(image)
         db.session.commit()
         if image_file:
-            save_image_file(image_file, image.id)
+            save_image_file(image_file, str(image.id))
         return CreateImage(image=image)
 
 
