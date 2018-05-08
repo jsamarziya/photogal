@@ -14,9 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import os
 
 from PIL import Image as PIL_Image
 from flask import current_app as app
+from werkzeug.datastructures import FileStorage
 
 
 def validate_image_file(image_file):
@@ -24,7 +26,8 @@ def validate_image_file(image_file):
     PIL_Image.open(image_file)
 
 
-def save_image_file(image_file, filename):
+def save_image_file(image_file: FileStorage, filename: str):
     """Saves the specified image to the filesystem."""
-    app.logger.debug(f"saving image file {image_file} as {filename}")
-    # TODO: save the image. (we need a directory, get from app config)
+    path = os.path.join(app.config["PHOTOGAL_IMAGE_DIRECTORY"], filename)
+    app.logger.debug(f"Saving image file {image_file} as {path}")
+    image_file.save(path)
