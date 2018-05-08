@@ -16,28 +16,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import json
+import os
 
 from flask import Flask
+from flask import current_app as app
 from flask_graphql import GraphQLView
 from flask_sqlalchemy import SQLAlchemy
-from photogal import config as default_config
 
 
 def create_app(config=None) -> Flask:
     """
     Creates the Flask app.
     """
-    app = Flask(__name__, instance_relative_config=True)
-    load_config(app, config)
-    init_database(app)
-    init_views(app)
+    # noinspection PyShadowingNames
+    app = Flask(__name__, instance_path=os.getenv('FLASK_INSTANCE_PATH'), instance_relative_config=True)
+    with app.app_context():
+        load_config(config)
+        init_database()
+        init_views()
     return app
 
 
-def load_config(app, config=None):
+def load_config(config=None):
     """
     Loads the application configuration.
     """
+    from photogal import config as default_config
     app.logger.debug("Instance path is %s", app.instance_path)
     app.config.from_object(default_config)
     app.config.from_pyfile('photogal.cfg', silent=True)
@@ -47,19 +51,18 @@ def load_config(app, config=None):
     app.logger.debug("Configuration:\n%s", json.dumps(app.config, indent=4, sort_keys=True, default=str))
 
 
-def init_database(app: Flask) -> SQLAlchemy:
+def init_database() -> SQLAlchemy:
     """
     Initializes the database.
     """
     from photogal.database import db, register_listeners
     db.init_app(app)
-    with app.app_context():
-        register_listeners()
-        db.create_all()
+    register_listeners()
+    db.create_all()
     return db
 
 
-def init_views(app: Flask):
+def init_views():
     from photogal.graphql import schema
     enable_graphiql = app.env == 'development'
     app.add_url_rule('/graphql', view_func=GraphQLView.as_view('graphql', schema=schema, graphiql=enable_graphiql))

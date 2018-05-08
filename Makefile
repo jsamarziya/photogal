@@ -1,6 +1,7 @@
 .PHONY: clean dist doctest envclean init pytest run test upgrade
 
 PYTHON = python3.6
+ROOT_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 init:
 	$(PYTHON) -m venv venv
@@ -14,6 +15,7 @@ upgrade:
 run:
 	FLASK_APP=photogal \
 	FLASK_ENV=development \
+	FLASK_INSTANCE_PATH="$(ROOT_DIR)instance" \
 	venv/bin/flask run
 
 test: pytest
