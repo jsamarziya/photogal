@@ -1,4 +1,4 @@
-.PHONY: clean dist doctest envclean init pytest run test upgrade
+.PHONY: clean clean_all clean_db clean_env clean_images clean_instance dist doctest init pytest run test upgrade
 
 PYTHON = python3.6
 ROOT_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -30,8 +30,17 @@ dist: test
 	venv/bin/python setup.py bdist_wheel
 
 clean:
-	rm -rf build dist
+	rm -rf build dist .pytest_cache
 
-envclean: clean
-	rm -rf venv src/photogal.egg-info .pytest_cache
+clean_db:
+	rm -f instance/photogal.db
 
+clean_images:
+	rm -rf instance/images
+
+clean_instance: clean_db clean_images
+
+clean_env:
+	rm -rf venv src/photogal.egg-info
+
+clean_all: clean clean_env clean_instance
