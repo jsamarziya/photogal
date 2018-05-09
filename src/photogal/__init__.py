@@ -45,7 +45,7 @@ def load_config(config=None):
     from photogal import config as default_config
     app.logger.debug("Instance path is %s", app.instance_path)
     app.config.from_object(default_config)
-    app.config.from_pyfile('photogal.cfg', silent=True)
+    app.config.from_pyfile('config.py', silent=True)
     if config is not None:
         app.config.from_object(config)
     app.config.from_envvar('PHOTOGAL_CONFIG', silent=True)
