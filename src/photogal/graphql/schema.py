@@ -29,6 +29,7 @@ from photogal.image import save_image_file
 
 # noinspection PyShadowingBuiltins
 def resolve_gallery_id(id: int = None, gallery_id: str = None) -> int:
+    """Returms the gallery id contained in the specified id or gallery_id values."""
     if gallery_id is None:
         if id is None:
             raise ValueError("Either id or gallery_id must be specified")
@@ -39,11 +40,13 @@ def resolve_gallery_id(id: int = None, gallery_id: str = None) -> int:
 
 
 def fetch_gallery(gallery_id: int) -> GalleryModel:
+    """Retrieves the specified gallery."""
     return GalleryModel.query.get(gallery_id)
 
 
 # noinspection PyShadowingBuiltins
 def resolve_image_id(id: int = None, image_id: str = None) -> int:
+    """Returms the image id contained in the specified id or image_id values."""
     if image_id is None:
         if id is None:
             raise ValueError("Either id or image_id must be specified")
@@ -54,10 +57,12 @@ def resolve_image_id(id: int = None, image_id: str = None) -> int:
 
 
 def fetch_image(image_id: int) -> ImageModel:
+    """Retrieves the specified image."""
     return ImageModel.query.get(image_id)
 
 
 def get_image_file():
+    """Gets the image file (if any) contained in the current request."""
     image_files = request.files.getlist("image")
     image_count = len(image_files)
     if image_count == 0:
