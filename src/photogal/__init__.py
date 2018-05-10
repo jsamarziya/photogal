@@ -24,14 +24,22 @@ from flask_graphql import GraphQLView
 from flask_sqlalchemy import SQLAlchemy
 
 
-def create_app(config=None, instance_path=None) -> Flask:
+class Photogal(Flask):
+    """The Photogal application."""
+
+    def __init__(self, *args, **kwargs):
+        Flask.__init__(self, *args, **kwargs)
+        self.image_directory = None
+
+
+def create_app(config=None, instance_path=None) -> Photogal:
     """
-    Creates the Flask app.
+    Creates the Photogal application.
     """
     if instance_path is None:
         instance_path = os.getenv('FLASK_INSTANCE_PATH')
     # noinspection PyShadowingNames
-    app = Flask(__name__, instance_path=instance_path, instance_relative_config=True)
+    app = Photogal(__name__, instance_path=instance_path, instance_relative_config=True)
     with app.app_context():
         app.logger.debug("Instance path is %s", app.instance_path)
         load_config(config)

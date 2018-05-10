@@ -18,6 +18,7 @@ import filecmp
 
 import pytest
 from assertpy import assert_that
+from photogal import Photogal
 from photogal.image import validate_image_file, save_image_file
 from werkzeug.datastructures import FileStorage
 
@@ -33,7 +34,7 @@ def test_validate_image_file_invalid(shared_datadir):
     assert_that(str(ex.value)).matches("cannot identify image file")
 
 
-def test_save_image_file(app, shared_datadir):
+def test_save_image_file(app: Photogal, shared_datadir):
     image_file = shared_datadir / 'einstein.jpg'
     with open(image_file, 'rb') as stream:
         file_storage = FileStorage(stream=stream)

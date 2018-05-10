@@ -19,14 +19,14 @@ import photogal
 import photogal.database
 import pytest
 from assertpy.assertpy import AssertionBuilder
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from graphene.test import Client
+from photogal import Photogal
 from photogal.graphql import schema
 
 
 @pytest.fixture
-def app(tmpdir) -> Flask:
+def app(tmpdir) -> Photogal:
     from . import config
     instance_dir = tmpdir.mkdir("instance")
     return photogal.create_app(config=config, instance_path=instance_dir)
