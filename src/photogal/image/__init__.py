@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import contextlib
 import os
 import tempfile
 
@@ -34,10 +35,9 @@ def save_image_file(image_file: FileStorage) -> str:
         app.logger.debug(f"Saving image file {image_file} as {filename}")
         with open(fd, 'wb') as f:
             image_file.save(f)
+        validate_image_file(filename)
     except Exception as e:
-        try:
+        with contextlib.suppress(OSError):
             os.remove(filename)
-        except OSError:
-            pass
         raise e
     return filename
