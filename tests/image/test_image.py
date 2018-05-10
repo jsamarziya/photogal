@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import filecmp
+import os
 
 import pytest
 from assertpy import assert_that
@@ -42,3 +43,13 @@ def test_save_image_file(app: Photogal, shared_datadir):
     assert_that(filename).is_file()
     assert_that(filename).is_child_of(app.image_directory)
     assert_that(filecmp.cmp(image_file, filename)).is_true()
+
+
+def test_save_image_file_with_invalid_file(app: Photogal, shared_datadir):
+    assert_that(os.listdir(app.image_directory)).is_empty()
+    image_file = shared_datadir / 'test.txt'
+    with pytest.raises(OSError):
+        with open(image_file, 'rb') as stream:
+            file_storage = FileStorage(stream=stream)
+            save_image_file(file_storage)
+    assert_that(os.listdir(app.image_directory)).is_empty()
