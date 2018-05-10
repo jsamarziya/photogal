@@ -21,6 +21,5 @@ import os
 
 from flask import current_app as app
 
-PHOTOGAL_IMAGE_DIRECTORY = os.path.join(app.instance_path, 'images')
 SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(app.instance_path, 'photogal.db')}"
 SQLALCHEMY_TRACK_MODIFICATIONS = False

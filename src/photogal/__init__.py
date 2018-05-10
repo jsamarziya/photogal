@@ -77,12 +77,17 @@ def init_storage():
     """
     Initializes the storage system.
     """
-    app.image_directory = os.path.join(app.config["PHOTOGAL_IMAGE_DIRECTORY"])
-    if not os.path.exists(app.image_directory):
-        app.logger.info("Image directory %s does not exist. Creating...", app.image_directory)
-        os.makedirs(app.image_directory, 0o700, True)
-    elif not os.path.isdir(app.image_directory):
-        raise FileExistsError(f"{app.image_directory} is not a directory")
+    image_directory = app.config.get("PHOTOGAL_IMAGE_DIRECTORY")
+    if image_directory is None:
+        image_directory = os.path.join(app.instance_path, 'images')
+    else:
+        image_directory = os.path.join(image_directory)
+    if not os.path.exists(image_directory):
+        app.logger.info("Image directory %s does not exist. Creating...", image_directory)
+        os.makedirs(image_directory, 0o700, True)
+    elif not os.path.isdir(image_directory):
+        raise FileExistsError(f"{image_directory} is not a directory")
+    app.image_directory = image_directory
 
 
 def init_views():
