@@ -15,5 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Photogal configuration values for testing."""
+
 SQLALCHEMY_DATABASE_URI = 'sqlite://'
 TESTING = True
