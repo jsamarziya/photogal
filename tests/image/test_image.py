@@ -14,9 +14,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import filecmp
+
 import pytest
 from assertpy import assert_that
-from photogal.image import validate_image_file
+from photogal.image import validate_image_file, save_image_file
+from werkzeug.datastructures import FileStorage
 
 
 def test_validate_image_file(shared_datadir):
@@ -25,6 +28,16 @@ def test_validate_image_file(shared_datadir):
 
 
 def test_validate_image_file_invalid(shared_datadir):
-    with pytest.raises(OSError) as excinfo:
+    with pytest.raises(OSError) as ex:
         validate_image_file(shared_datadir / 'test.txt')
-    assert_that(str(excinfo.value)).matches("cannot identify image file")
+    assert_that(str(ex.value)).matches("cannot identify image file")
+
+
+def test_save_image_file(app, shared_datadir):
+    image_file = shared_datadir / 'einstein.jpg'
+    with open(image_file, 'rb') as stream:
+        file_storage = FileStorage(stream=stream)
+        filename = save_image_file(file_storage)
+    assert_that(filename).is_file()
+    assert_that(filename).is_child_of(app.image_directory)
+    assert_that(filecmp.cmp(image_file, filename)).is_true()
