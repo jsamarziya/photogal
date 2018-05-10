@@ -189,12 +189,13 @@ class CreateImage(graphene.Mutation):
         image = create_image()
         image_file = get_image_file()
         if image_file:
-            validate_image_file(image_file)
             image.filename = image_file.filename
+            file = save_image_file(image_file)
+            validate_image_file(file)
+            # TODO: if not valid, delete file
         db.session.add(image)
         db.session.commit()
-        if image_file:
-            save_image_file(image_file, str(image.id))
+        # TODO: rename image file :-P
         return CreateImage(image=image)
 
 
