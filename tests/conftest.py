@@ -26,18 +26,19 @@ from photogal.graphql import schema
 
 
 @pytest.fixture
-def app() -> Flask:
+def app(tmpdir) -> Flask:
     from . import config
-    return photogal.create_app(config)
+    instance_dir = tmpdir.mkdir("instance")
+    return photogal.create_app(config=config, instance_path=instance_dir)
 
 
-# noinspection PyUnusedLocal
+# noinspection PyUnusedLocal,PyShadowingNames
 @pytest.fixture
 def db(app) -> SQLAlchemy:
     return photogal.database.db
 
 
-# noinspection PyUnusedLocal
+# noinspection PyUnusedLocal,PyShadowingNames
 @pytest.fixture
 def graphene_client(db) -> Client:
     return Client(schema)
