@@ -14,6 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import contextlib
+import os
 
 import graphene
 from flask import request
@@ -22,8 +24,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from graphql_relay import from_global_id
 from photogal.database import db
 from photogal.database.model import Gallery as GalleryModel, Image as ImageModel
-
-from photogal.image import save_image_file, validate_image_file
+from photogal.image import save_image_file
 
 
 # noinspection PyShadowingBuiltins
@@ -190,11 +191,17 @@ class CreateImage(graphene.Mutation):
         image_file = get_image_file()
         if image_file:
             image.filename = image_file.filename
-            file = save_image_file(image_file)
-            validate_image_file(file)
-            # TODO: if not valid, delete file
-        db.session.add(image)
-        db.session.commit()
+            temp_file = save_image_file(image_file)
+        else:
+            temp_file = None
+        try:
+            db.session.add(image)
+            db.session.commit()
+        except Exception as e:
+            if temp_file is not None:
+                with contextlib.suppress(OSError):
+                    os.remove(temp_file)
+            raise e
         # TODO: rename image file :-P
         return CreateImage(image=image)
 
