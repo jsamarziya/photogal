@@ -202,7 +202,7 @@ class CreateImage(graphene.Mutation):
                 with contextlib.suppress(OSError):
                     os.remove(temp_file)
             raise e
-        # TODO: rename image file :-P
+        os.replace(temp_file, os.path.join(os.path.dirname(temp_file), str(image.id)))
         return CreateImage(image=image)
 
 
