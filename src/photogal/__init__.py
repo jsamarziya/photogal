@@ -24,13 +24,16 @@ from flask_graphql import GraphQLView
 from flask_sqlalchemy import SQLAlchemy
 
 
-def create_app(config=None) -> Flask:
+def create_app(config=None, instance_path=None) -> Flask:
     """
     Creates the Flask app.
     """
+    if instance_path is None:
+        instance_path = os.getenv('FLASK_INSTANCE_PATH')
     # noinspection PyShadowingNames
-    app = Flask(__name__, instance_path=os.getenv('FLASK_INSTANCE_PATH'), instance_relative_config=True)
+    app = Flask(__name__, instance_path=instance_path, instance_relative_config=True)
     with app.app_context():
+        app.logger.debug("Instance path is %s", app.instance_path)
         load_config(config)
         init_database()
         init_storage()
@@ -43,7 +46,6 @@ def load_config(config=None):
     Loads the application configuration.
     """
     from photogal import config as default_config
-    app.logger.debug("Instance path is %s", app.instance_path)
     app.config.from_object(default_config)
     app.config.from_pyfile('config.py', silent=True)
     if config is not None:
@@ -67,12 +69,12 @@ def init_storage():
     """
     Initializes the storage system.
     """
-    image_directory = app.config["PHOTOGAL_IMAGE_DIRECTORY"]
-    if not os.path.exists(image_directory):
-        app.logger.info("Image directory %s does not exist. Creating...", image_directory)
-        os.makedirs(image_directory, 0o700, True)
-    elif not os.path.isdir(image_directory):
-        raise FileExistsError(f"{image_directory} is not a directory")
+    app.image_directory = app.config["PHOTOGAL_IMAGE_DIRECTORY"]
+    if not os.path.exists(app.image_directory):
+        app.logger.info("Image directory %s does not exist. Creating...", app.image_directory)
+        os.makedirs(app.image_directory, 0o700, True)
+    elif not os.path.isdir(app.image_directory):
+        raise FileExistsError(f"{app.image_directory} is not a directory")
 
 
 def init_views():
