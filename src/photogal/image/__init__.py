@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
+import tempfile
 
 from PIL import Image as PIL_Image
 from flask import current_app as app
@@ -26,8 +27,17 @@ def validate_image_file(image_file):
     PIL_Image.open(image_file)
 
 
-def save_image_file(image_file: FileStorage, filename: str):
+def save_image_file(image_file: FileStorage) -> str:
     """Saves the specified image to the filesystem."""
-    path = os.path.join(app.config["PHOTOGAL_IMAGE_DIRECTORY"], filename)
-    app.logger.debug(f"Saving image file {image_file} as {path}")
-    image_file.save(path)
+    fd, filename = tempfile.mkstemp(dir=app.image_directory)
+    try:
+        app.logger.debug(f"Saving image file {image_file} as {filename}")
+        with open(fd, 'wb') as f:
+            image_file.save(f)
+    except Exception as e:
+        try:
+            os.remove(filename)
+        except OSError:
+            pass
+        raise e
+    return filename
