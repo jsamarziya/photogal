@@ -14,8 +14,9 @@ setup(
         'Flask',
         'Flask-GraphQL',
         'Flask-SQLAlchemy',
+        'Graphene-SQLAlchemy',
         'Pillow',
         'SQLAlchemy',
-        'graphene_sqlalchemy'
+        'StringLike'
     ],
 )

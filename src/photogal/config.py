@@ -15,11 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Photogal default configuration values"""
+"""Photogal default configuration values."""
 
 import os
 
 from flask import current_app as app
+from stringlike.lazy import LazyString
 
+PHOTOGAL_IMAGE_DIRECTORY = LazyString(lambda: os.path.join(app.instance_path, 'images'))
 SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(app.instance_path, 'photogal.db')}"
 SQLALCHEMY_TRACK_MODIFICATIONS = False

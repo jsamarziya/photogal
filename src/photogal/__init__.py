@@ -79,9 +79,8 @@ def init_storage():
     """
     image_directory = app.config.get("PHOTOGAL_IMAGE_DIRECTORY")
     if image_directory is None:
-        image_directory = os.path.join(app.instance_path, 'images')
-    else:
-        image_directory = os.path.join(image_directory)
+        raise ValueError("PHOTOGAL_IMAGE_DIRECTORY not set")
+    image_directory = str(image_directory)
     if not os.path.exists(image_directory):
         app.logger.info("Image directory %s does not exist. Creating...", image_directory)
         os.makedirs(image_directory, 0o700, True)
