@@ -29,6 +29,7 @@ from photogal.graphql import schema
 def app(tmpdir) -> Photogal:
     from . import config
     instance_dir = tmpdir.mkdir("instance")
+    config.PHOTOGAL_IMAGE_DIRECTORY = instance_dir.join("images")
     return photogal.create_app(config=config, instance_path=instance_dir)
 
 
