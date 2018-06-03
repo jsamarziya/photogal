@@ -14,10 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+from photogal import approximate_date
 from photogal.database import db, register_last_modified_trigger_listener
 
 from photogal.database.model.keyword import Keyword
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 class Image(db.Model):
@@ -36,9 +37,7 @@ class Image(db.Model):
     # TODO: width and height were formerly non-null...
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)
-    creation_day = db.Column(db.Integer)
-    creation_month = db.Column(db.Integer)
-    creation_year = db.Column(db.Integer)
+    _image_date = db.Column("image_date", db.String)
 
     galleries = db.relationship("GalleryImage",
                                 back_populates="image",
@@ -51,9 +50,15 @@ class Image(db.Model):
     def __repr__(self):
         return f"<Image (id={self.id}, name='{self.name}')>"
 
-    def set_creation_date(self, creation_date):
-        # TODO parse date, set creation_ fields
-        pass
+    @hybrid_property
+    def image_date(self):
+        return None if self._image_date is None else approximate_date.str(self._image_date)
+
+    @image_date.setter
+    def image_date(self, value):
+        self._image_date = None if value is None else approximate_date.repr(value)
+
+    # TODO do we want hybrid read-only properties for year/month/date?
 
     def set_keywords(self, *keywords):
         self.keywords = [Keyword(image=self, keyword=keyword, position=index) for index, keyword in enumerate(keywords)]

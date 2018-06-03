@@ -139,3 +139,12 @@ def test_set_keywords(db: SQLAlchemy):
     image.set_keywords()
     db.session.commit()
     assert_that(image.keywords).is_empty()
+
+
+def test_image_date():
+    image = Image()
+    assert_that(image.image_date).is_none()
+    image.image_date = "1996"
+    assert_that(image.image_date).is_equal_to("1996")
+    # noinspection PyProtectedMember
+    assert_that(image._image_date).is_equal_to("1996-00-00")
