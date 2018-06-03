@@ -25,7 +25,7 @@ def repr(value):
     """Normalizes an approximate_date"""
     match = repr_pattern.match(value)
     if match is None:
-        raise ValueError()
+        raise ValueError
     year, month, day = match.group(1, 2, 3)
     if month is None:
         month = "-00"
