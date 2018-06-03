@@ -31,6 +31,7 @@ def test_create_image(graphene_client: Client):
                 name
                 public
                 keywords
+`                imageDate
             }
         }
     }
@@ -43,7 +44,8 @@ def test_create_image(graphene_client: Client):
                     "imageId": 1,
                     "name": "myImage",
                     "public": false,
-                    "keywords": []
+                    "keywords": [],
+                    "imageDate": null
                 }
             }
         }
@@ -54,6 +56,7 @@ def test_create_image(graphene_client: Client):
     assert_that(image.name).is_equal_to('myImage')
     assert_that(image.public).is_false()
     assert_that(image.keywords).is_empty()
+    assert_that(image.image_date).is_none()
 
 
 def test_create_image_with_keywords(graphene_client: Client):
@@ -83,3 +86,41 @@ def test_create_image_with_keywords(graphene_client: Client):
     ''')
     image = Image.query.get(1)
     assert_that([keyword.keyword for keyword in image.keywords]).contains_sequence("foo", "bar", "baz")
+
+
+def test_create_image_with_image_date(graphene_client: Client):
+    result = graphene_client.execute('''
+    mutation {
+        createImage(imageDate: "2017-01-12") {
+            image {
+                imageDate
+            }
+        }
+    }
+    ''')
+    assert_that(json.dumps(result)).is_equal_to_ignoring_whitespace('''
+    {
+        "data": {
+            "createImage": {
+                "image": {
+                    "imageDate": "2017-01-12"
+                }
+            }
+        }
+    }
+    ''')
+    image = Image.query.get(1)
+    assert_that(image.image_date).is_equal_to("2017-01-12")
+
+
+def test_create_image_with_invalid_image_date(graphene_client: Client):
+    result = graphene_client.execute('''
+    mutation {
+        createImage(imageDate: "2017-1-12") {
+            image {
+                imageDate
+            }
+        }
+    }
+    ''')
+    assert_that(result['errors'][0]['message']).is_equal_to("'2017-1-12' is not a valid imageDate")

@@ -167,7 +167,7 @@ class CreateImage(graphene.Mutation):
                                           required=False)
         name = graphene.String(description="The name of the image.", required=False)
         description = graphene.String(description="The description of the image.", required=False)
-        creation_date = graphene.String(description="The time at which the image was taken.", required=False)
+        image_date = graphene.String(description="The date on which the image was taken.", required=False)
         keywords = graphene.List(graphene.String, description="The keywords.", required=False)
 
     image = graphene.Field(Image)
@@ -178,7 +178,7 @@ class CreateImage(graphene.Mutation):
                last_modified=None,
                name=None,
                description=None,
-               creation_date=None,
+               image_date=None,
                keywords=None):
         def create_image():
             # noinspection PyShadowingNames
@@ -188,7 +188,10 @@ class CreateImage(graphene.Mutation):
                 name=name,
                 description=description
             )
-            image.set_creation_date(creation_date)
+            try:
+                image.image_date = image_date
+            except ValueError:
+                raise ValueError(f"'{image_date}' is not a valid imageDate")
             image.set_keywords(*([] if keywords is None else keywords))
             return image
 
