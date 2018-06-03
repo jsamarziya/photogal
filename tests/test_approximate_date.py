@@ -29,9 +29,12 @@ def test_repr():
         assert_that(approximate_date.repr(value)).is_equal_to(repr)
     for value in [
         "",
-        "foo"
+        "foo",
+        "1992-",
+        "1992-4",
+        "1992-1-1"
     ]:
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, message=f"for value {value}"):
             approximate_date.repr(value)
 
 

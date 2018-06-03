@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import re
 
-repr_pattern = re.compile(r'(\d+)(-\d\d)?(-\d\d)?')
+repr_pattern = re.compile(r'^(\d+)(-\d\d)?(-\d\d)?$')
 str_pattern = re.compile(r'(\d+)-(\d\d)-(\d\d)')
 
 
